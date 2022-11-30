@@ -1,0 +1,15 @@
+{
+    "private": true,
+    "name": "songhaus",
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "postinstall": "yarn build",
+        "build": "yarn workspace client build && yarn workspace server build",
+        "start": "yarn workspace server start"
+    },
+    "dependencies": {
+        "concurrently": "^7.6.0"
+    }
+}
