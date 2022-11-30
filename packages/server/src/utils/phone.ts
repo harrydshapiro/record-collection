@@ -9,6 +9,10 @@ const twilioClient = twilio(accountSid, authToken);
 export async function sendMessageToPhoneNumber(body: string, phoneNumber: string) {
     console.log('About to send message to phone number', { body, phoneNumber });
     try {
+        if (process.env.NODE_ENV === 'development') {
+            return
+        }
+        
         await twilioClient.messages.create({ body, from: fromNumber, to: phoneNumber });
     } catch (err) {
         console.error('Error attempting to send message', { body, phoneNumber, err });

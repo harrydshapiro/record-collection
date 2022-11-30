@@ -8,8 +8,14 @@ import path from 'path'
 import { dbCreateConnection } from 'orm/DataSource';
 import { startCron } from 'request-scheduler/cron';
 import routes from 'routes/index';
+import cors from 'cors'
 
 export const app = express();
+
+app.use(cors({
+    // origin: 'localhost'
+}))
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
