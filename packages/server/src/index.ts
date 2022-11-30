@@ -23,6 +23,7 @@ app.use(morgan('combined'));
 
 app.use('/', routes);
 app.use(express.static(path.join(__dirname, '../../client/build')));
+app.use('*', (req, res) => res.redirect('/'))
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
