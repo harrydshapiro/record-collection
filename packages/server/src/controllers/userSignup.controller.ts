@@ -32,10 +32,5 @@ export default async function userSignupController(
     active: false,
   });
 
-  sendMessageToPhoneNumber(
-    "hey pal - ur on the list. expect a text from this # soon...",
-    phone
-  );
-
   response.sendStatus(201);
 }
