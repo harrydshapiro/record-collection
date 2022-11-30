@@ -21,7 +21,6 @@ async function executeSubmissionRequest() {
         await turnOffSubmissionRequest(currentRequest);
     }
     await turnOnSubmissionRequest(requestToSend);
-
     const users = await userRepository.find({ where: { active: true } });
     const requestText = requestToSend.requestText;
 
