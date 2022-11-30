@@ -6,7 +6,7 @@ import { userRepository } from 'orm/repositories/user.repository';
 import { sendMessageToPhoneNumber } from 'utils/phone';
 import { addSongToPlaylist, ZEITGEIST_URI, getPlaylistShareLink } from 'utils/spotify';
 
-export default async function smsIncomingController(req: any, res: any) {
+export default async function handleIncomingMessage(req: any, res: any) {
     const twimlResponse = new twiml.MessagingResponse();
     const { Body: messageBody, From: senderPhoneNumber } = req.body;
 

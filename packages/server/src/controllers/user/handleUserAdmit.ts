@@ -4,7 +4,7 @@ import { userRepository } from "orm/repositories/user.repository";
 import { sendMessageToPhoneNumber } from "utils/phone";
 import { createSpotifyPlaylist } from "utils/spotify";
 
-export default async function userAdmitController(
+export default async function handleUserAdmit(
     request: Express.Request,
     response: Express.Response
 ) {
