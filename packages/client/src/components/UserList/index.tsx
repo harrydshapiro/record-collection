@@ -8,7 +8,7 @@ export function UserList ({ users, selectHandler }: { users: IUser[], selectHand
     return (
         <div className={styles.userListWrapper}>
             {users.map((user, index) => (
-                <div onClick={() => selectHandler(user)} key={index}>
+                <div onClick={() => selectHandler(user)} key={index} className={styles.userItem}>
                     {user.firstName} {user.lastName}
                 </div>
             ))}

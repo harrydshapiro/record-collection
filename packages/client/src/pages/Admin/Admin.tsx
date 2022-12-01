@@ -5,6 +5,8 @@ import { Navigate } from 'react-router-dom'
 import { UserList } from '../../components/UserList'
 import { selectHasAdminAuth } from '../../store/userReducer'
 
+const users = [{ firstName: 'harry', lastName: 'shapiro', phoneNumber: '+19176475261', spotifyUri: 'www.foo.com', active: true, id: '', messages: [], personalPlaylist: ({} as IPlaylist)}]
+
 export function Admin (): JSX.Element {
     const hasAdminAuth = useSelector(selectHasAdminAuth)
 
@@ -12,7 +14,10 @@ export function Admin (): JSX.Element {
         return <Navigate to="/"/>
     }
 
-    return <UserList users={[{ firstName: 'harry', lastName: 'shapiro', phoneNumber: '+19176475261', spotifyUri: 'www.foo.com', active: true, id: '', messages: [], personalPlaylist: ({} as IPlaylist)}]} selectHandler={(user: IUser) => {
-        console.log('user is', user)
-    }}/>
+    return (
+    <div id="page">
+        <UserList users={users} selectHandler={(user: IUser) => {
+            console.log('user is', user)
+        }}/>
+    </div>)
 }
