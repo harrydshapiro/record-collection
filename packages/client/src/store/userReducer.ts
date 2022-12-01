@@ -1,28 +1,29 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from ".";
 
 type UserState = {
-    hasAdminAuth: boolean;
+    apiKey: string | null;
 };
 
 const initialState: UserState = {
-    hasAdminAuth: true,
+    apiKey: null,
 };
 
 const UserSlice = createSlice({
     name: "userInformation",
     initialState,
     reducers: {
-        login: (state) => {
-            state.hasAdminAuth = true
+        login: (state, action: PayloadAction<string>) => {
+            state.apiKey = action.payload
         },
         logout: (state) => {
-            state.hasAdminAuth = false
+            state.apiKey = null
         },
     },
 });
 
-export const selectHasAdminAuth = (state: RootState) => state.user.hasAdminAuth
+export const selectHasAdminAuth = (state: RootState) => !!state.user.apiKey
+export const selectApiKey = (state: RootState) => state.user.apiKey
 
 export const { login, logout } = UserSlice.actions;
 
