@@ -2,10 +2,10 @@
     "private": true,
     "name": "songhaus",
     "workspaces": [
-        "packages/*"
+        "packages/**"
     ],
     "scripts": {
-        "postinstall": "yarn build",
+        "heroku-postinstall": "yarn build",
         "build": "yarn workspace client build && yarn workspace server build",
         "start": "yarn workspace server start"
     },

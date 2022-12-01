@@ -20,3 +20,5 @@ export class Playlist {
     @OneToOne(() => User, (user) => user.personalPlaylist)
     user?: User;
 }
+
+export type IPlaylist = InstanceType<typeof Playlist>

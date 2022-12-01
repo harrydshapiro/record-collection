@@ -30,3 +30,5 @@ export class User {
     @JoinColumn()
     personalPlaylist!: Playlist;
 }
+
+export type IUser = InstanceType<typeof User>

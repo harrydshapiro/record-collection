@@ -2,7 +2,6 @@ import Express from "express";
 
 import { userRepository } from "orm/repositories/user.repository";
 import { sendMessageToPhoneNumber } from "utils/phone";
-import { createSpotifyPlaylist } from "utils/spotify";
 
 export default async function handleUserSignup(
   request: Express.Request,
@@ -12,8 +11,6 @@ export default async function handleUserSignup(
     `New user submission: ${JSON.stringify(request.body)}`,
     "+19176475261"
   );
-
-  console.log("body is", request.body);
 
   const { firstName, lastName, phone, email, spotifyProfile } = request.body;
 

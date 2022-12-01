@@ -34,7 +34,8 @@
             "request-scheduler/*": ["src/request-scheduler/*"],
             "orm/*": ["src/orm/*"],
             "routes/*": ["src/routes/*"],
-            "utils/*": ["src/utils/*"]
+            "utils/*": ["src/utils/*"],
+            "auth/*": ["src/auth/*"]
         } /* Specify a set of entries that re-map imports to additional lookup locations. */,
         // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
         // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */

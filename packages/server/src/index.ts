@@ -9,19 +9,21 @@ import { dbCreateConnection } from 'orm/DataSource';
 import { startCron } from 'request-scheduler/cron';
 import routes from 'routes/index';
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 export const app = express();
 
-app.use(cors({
-    // origin: 'localhost'
-}))
+app.use(cors({}))
+
+app.use(cookieParser())
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(morgan('combined'));
 
-app.use('/', routes);
+app.use(routes);
+
 app.use(express.static(path.join(__dirname, '../../client/build')));
 app.use('*', (req, res) => res.redirect('/'))
 

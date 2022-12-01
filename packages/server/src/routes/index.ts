@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { smsRouter } from "./sms";
-import { userRouter } from "./user";
+import smsRouter from "./sms";
+import userRouter from "./user";
 
 const router = Router();
 
