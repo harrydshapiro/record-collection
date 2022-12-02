@@ -22,3 +22,5 @@ export class Message {
     @JoinColumn()
     user!: User;
 }
+
+export type IMessage = InstanceType<typeof Message>

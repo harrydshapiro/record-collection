@@ -20,3 +20,11 @@ export function submitSignupForm (form: SignupForm) {
 export function fetchAllUsers () {
     return client.get('user')
 }
+
+export function fetchUserMessages (phoneNumber: string) {
+    return client.get(`sms/${phoneNumber}`)
+}
+
+export function sendMessage (toNumber: string, messageBody: string) {
+    return client.post(`sms/outgoing`, { toNumber, messageBody }, { headers: { 'Content-Type': 'application/json' }})
+}

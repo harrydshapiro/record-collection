@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 
 import './App.css';
 import { Signup } from './pages/Signup/Signup';
-import { Admin } from './pages/Admin/Admin';
+import { Admin } from './pages/Admin';
 import { reduxStore } from './store';
 
 function App() {

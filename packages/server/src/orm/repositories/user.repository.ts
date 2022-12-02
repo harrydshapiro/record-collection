@@ -7,6 +7,9 @@ export function findAllActiveUsers () {
     return userRepository.find({
         where: {
             active: true
+        },
+        order: {
+            firstName: 'ASC'
         }
     })
 }
