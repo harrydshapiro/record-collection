@@ -2,13 +2,12 @@
     "private": true,
     "name": "songhaus",
     "workspaces": [
-        "@songhaus/client",
-        "@songhaus/server"
+        "packages/**"
     ],
     "scripts": {
         "heroku-postinstall": "yarn build",
-        "build": "yarn workspace client build && yarn workspace server build",
-        "start": "yarn workspace server start"
+        "build": "yarn workspace @songhaus/client build && yarn workspace @songhaus/server build",
+        "start": "yarn workspace @songhaus/server start"
     },
     "dependencies": {
         "concurrently": "^7.6.0"
