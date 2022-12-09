@@ -8,10 +8,12 @@ export function addSongToPlaylist(songUri: string, playlistUri: string) {
         return;
     }
 
-    return axios.post('https://hooks.zapier.com/hooks/catch/5927178/bcw7zup/', {
+    const result = axios.post('https://hooks.zapier.com/hooks/catch/5927178/bcw7zup/', {
         songUri,
         playlistUri,
     });
+    console.log('result of adding song to playlist was', { songUri, playlistUri, result })
+    return result
 }
 
 export function createSpotifyPlaylist(name: string) {
