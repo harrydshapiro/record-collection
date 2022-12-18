@@ -32,4 +32,7 @@ export class SubmissionRequest {
 
     @OneToMany(() => Message, (message) => message.submissionRequest)
     messages!: Array<Message>;
+
+    @Column("varchar", { nullable: true })
+    mediaUrl?: string
 }
