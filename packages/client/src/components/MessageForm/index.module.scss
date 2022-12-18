@@ -3,7 +3,7 @@
     flex-direction: column;
 
     .formInput {
-        width: 99%;
+        width: 100%;
         margin-bottom: 1rem;
         border: none;
         border-bottom: 1px solid black;
@@ -11,6 +11,7 @@
         height: 70px;
         outline: none;
         background: #edebeb;
+        box-sizing: border-box;
     }
     
     .submitButton {

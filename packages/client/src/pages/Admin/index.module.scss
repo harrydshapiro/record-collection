@@ -5,6 +5,8 @@
     padding: 20px;
     display: flex;
     flex-direction: row;
+    max-width: 1260px;
+    margin: auto;
 }
 
 .userListContainer {
@@ -22,7 +24,7 @@
     overflow-wrap: anywhere;
 
     .messageFeedContainer {
-        height: calc(100% - 100px);
+        height: calc(100% - 110px);
         overflow: scroll;
         display: flex;
         flex-direction: column-reverse;
@@ -30,5 +32,6 @@
 
     > div:nth-child(2) {
         height: 100px;
+        margin-top: 10px;
     }
 }

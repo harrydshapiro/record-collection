@@ -42,7 +42,7 @@ export function Admin (): JSX.Element {
     return (
         <div id={styles.page}>
             <div className={styles.userListContainer}>
-                <UserList users={users} selectHandler={setSelecteduser} />
+                <UserList users={users} selectHandler={setSelecteduser} selectedUser={selectedUser}/>
             </div>
             {
                 selectedUser && (

@@ -17,6 +17,7 @@ export function MessageFeed ({ user }: { user: IUser }) {
             {
                 messages.map((m, index) => (
                     <div key={index} className={styles.messageFeedItem}>
+                        <p className={styles.messageDate}>{new Date(m.createdAt).toLocaleString('en-us')}</p>
                         <p>{m.body}</p>
                     </div>
                 ))

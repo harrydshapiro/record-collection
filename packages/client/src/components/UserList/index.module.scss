@@ -6,5 +6,9 @@
 
     .userItem {
         cursor: pointer;
+
+        &.selected {
+            text-decoration: underline;
+        }
     }
 }
