@@ -87,7 +87,7 @@ export function Signup (): JSX.Element {
                     <img id={styles.logo} src="/logo.png" alt="logo"/>
 
                     <div className={styles.header}>
-                        <p>we're at capacity</p>
+                        <p>we've got a<br/>few spots left...</p>
                         <p>wanna put your<br />name down?</p>
                     </div>
 
