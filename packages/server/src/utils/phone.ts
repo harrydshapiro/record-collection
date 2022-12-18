@@ -10,9 +10,9 @@ const twilioClient = twilio(accountSid, authToken);
 export async function sendMessageToPhoneNumber(body: string, phoneNumber: string, mediaUrl?: string) {
     console.log('About to send message to phone number', { body, phoneNumber, mediaUrl });
     try {
-        if (process.env.NODE_ENV === 'development') {
-            return
-        }
+        // if (process.env.NODE_ENV === 'development') {
+        //     return
+        // }
         const messageConfig: MessageListInstanceCreateOptions = { body, from: fromNumber, to: phoneNumber }
         if (mediaUrl) {
             messageConfig.mediaUrl = mediaUrl

@@ -10,6 +10,7 @@ import { startCron } from 'request-scheduler/cron';
 import routes from 'routes/index';
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import { sendBlast } from 'utils/blast';
 
 export const app = express();
 
@@ -25,7 +26,9 @@ app.use(morgan('combined'));
 app.use(routes);
 
 app.use(express.static(path.join(__dirname, '../../client/build')));
-app.use('*', (req, res) => res.redirect('/'))
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
