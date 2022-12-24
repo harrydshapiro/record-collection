@@ -13,7 +13,8 @@
     margin-bottom: 5.3rem;
 }
 
-#signupForm {
+
+#signinForm {
     width: 90vw;
     height: 90vh;
     max-height: 600px;
@@ -30,10 +31,6 @@
 
     .header {
         margin-bottom: 3rem;
-
-        p:nth-last-of-type(1) {
-            text-align: right;
-        }
     }
     
     .formLabel {
@@ -49,16 +46,4 @@
             font-weight: 900;
         }
     }
-}
-
-.thankYouText {
-    font-size: 2rem;
-    margin: auto;
-}
-
-.ticker {
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
 }

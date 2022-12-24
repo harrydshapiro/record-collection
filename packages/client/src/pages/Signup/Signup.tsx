@@ -79,6 +79,7 @@ export function Signup (): JSX.Element {
         }
     }, [form])
 
+
     return (
         <div id={styles.page}>
             { signedUp ? 

@@ -6,6 +6,7 @@ import './App.css';
 import { Signup } from './pages/Signup/Signup';
 import { Admin } from './pages/Admin';
 import { reduxStore } from './store';
+import { Signin } from './pages/Signin/Signin';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Provider store={reduxStore}>
         <BrowserRouter>
           <Routes>
+            {/* <Route path='/' element={<Signin/>}/> */}
             <Route path='/signup' element={<Signup/>}/>
             <Route path='/admin' element={<Admin/>}/>
             <Route path="*" element={<Navigate to="/signup"/>}/>
