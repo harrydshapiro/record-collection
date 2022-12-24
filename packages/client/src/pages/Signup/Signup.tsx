@@ -4,7 +4,7 @@ import react, { useCallback, useState } from 'react'
 import { submitSignupForm } from '../../api/client'
 import styles from './signup.module.scss'
 
-export interface SignupForm { firstName: string, lastName: string, email: string, phone: string, spotifyProfile: string };
+export interface SignupForm { firstName: string, lastName: string, email: string, phone: string, spotifyProfile: string, reference: string };
 
 function isUrl(string: string) {
     try {
@@ -15,7 +15,7 @@ function isUrl(string: string) {
     }
 }
 
-function validateForm ({ firstName, lastName, email, phone, spotifyProfile }: SignupForm) {
+function validateForm ({ firstName, lastName, email, phone, spotifyProfile, reference }: SignupForm) {
     const invalidFields: (keyof SignupForm)[] = []
 
     if (!firstName) {
@@ -33,6 +33,9 @@ function validateForm ({ firstName, lastName, email, phone, spotifyProfile }: Si
     if (!spotifyProfile || !isUrl(spotifyProfile)) {
         invalidFields.push('spotifyProfile')
     }
+    if (!reference) {
+        invalidFields.push('reference')
+    }
 
     return { valid: invalidFields.length === 0, invalidFields }
 }
@@ -44,7 +47,8 @@ export function Signup (): JSX.Element {
         lastName: '',
         email: '',
         phone: '',
-        spotifyProfile: ''
+        spotifyProfile: '',
+        reference: ''
     })
 
     const [invalidFields, setInvalidFields] = useState<(keyof SignupForm)[]>([])
@@ -113,6 +117,10 @@ export function Signup (): JSX.Element {
                     <div className={clsx([styles.formLabel, invalidFields.includes("spotifyProfile") ? styles.invalid : null])}>
                         <label htmlFor="spotifyProfile">link to s*otify profile</label>
                         <input type="URL" name="spotifyProfile" value={form.spotifyProfile} onChange={({ target: { value }}) => handleInputChange('spotifyProfile', value)} />
+                    </div>
+                    <div className={clsx([styles.formLabel, invalidFields.includes("reference") ? styles.invalid : null])}>
+                        <label htmlFor="reference">who told ya about us?</label>
+                        <input type="text" name="reference" value={form.reference} onChange={({ target: { value }}) => handleInputChange('reference', value)} />
                     </div>
                     <input type="submit" value="Submit" onClick={onSubmit}/>
                 </div> 
