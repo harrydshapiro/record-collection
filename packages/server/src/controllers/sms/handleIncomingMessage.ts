@@ -28,6 +28,13 @@ export default async function handleIncomingMessage(req: any, res: any) {
         },
     });
 
+    if (messageBody === 'lemme in') {
+        // Generate session
+        // Generate link to SSO page that has session ID in link
+        res.send('')
+        return
+    }
+
     const currentSubmissionRequest = await getCurrentSubmissionRequest();
 
     try {
