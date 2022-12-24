@@ -1,9 +1,10 @@
 import 'dotenv/config';
 import 'reflect-metadata';
 import bodyParser from 'body-parser';
-import express from 'express';
+import express, { ErrorRequestHandler } from 'express';
 import morgan from 'morgan';
 import path from 'path'
+import 'express-async-errors'
 
 import { dbCreateConnection } from 'orm/DataSource';
 import { startCron } from 'request-scheduler/cron';
@@ -16,8 +17,15 @@ import postgresSession from 'connect-pg-simple'
 
 export const app = express();  
 
+// Ensures async errors in route handling don't hang. 
+// This is a fallback - individual handlers *should* do their own error responses.
+app.use(((err, req, res, next) => {
+    next(err);
+}) as ErrorRequestHandler);
+
 app.use(cors({}))
 
+// 🍪
 app.use(cookieParser())
 
 app.use(bodyParser.json());
