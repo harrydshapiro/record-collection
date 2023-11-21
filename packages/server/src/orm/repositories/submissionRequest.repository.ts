@@ -17,15 +17,23 @@ export function getCurrentSubmissionRequest() {
     });
 }
 
-export function getSubmissionRequestToSend() {
+export async function getSubmissionRequestToSend() {
     console.log('Getting unsent daily submission request');
-    return submissionRequestRepository.findOne({
+    const mostRecentRecord = await submissionRequestRepository.findOne({
+        order: {
+            scheduledFor: 'DESC',
+        },
+    });
+    console.log("most recent", { mostRecentRecord })
+    const result = await submissionRequestRepository.findOne({
         where: {
             requestedAt: IsNull(),
             scheduledFor: LessThanOrEqual(new Date()),
             isActive: false,
         },
     });
+    console.log('result of getSubmissionRequestToSend', { result })
+    return result
 }
 
 export async function turnOffSubmissionRequest(submissionRequest: SubmissionRequest) {
