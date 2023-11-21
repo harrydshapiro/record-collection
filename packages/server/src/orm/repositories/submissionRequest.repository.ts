@@ -19,12 +19,6 @@ export function getCurrentSubmissionRequest() {
 
 export async function getSubmissionRequestToSend() {
     console.log('Getting unsent daily submission request');
-    const mostRecentRecord = await submissionRequestRepository.findOne({
-        order: {
-            scheduledFor: 'DESC',
-        },
-    });
-    console.log("most recent", { mostRecentRecord })
     const result = await submissionRequestRepository.findOne({
         where: {
             requestedAt: IsNull(),
@@ -32,7 +26,6 @@ export async function getSubmissionRequestToSend() {
             isActive: false,
         },
     });
-    console.log('result of getSubmissionRequestToSend', { result })
     return result
 }
 
