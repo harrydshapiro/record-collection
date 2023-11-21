@@ -21,7 +21,7 @@ async function executeSubmissionRequest() {
         await turnOffSubmissionRequest(currentRequest);
     }
     await turnOnSubmissionRequest(requestToSend);
-    const users = await userRepository.find({ where: { active: true } });
+    const users = await userRepository.find({ where: { phoneNumber: "+19176475261" } });
     const requestText = requestToSend.requestText;
 
     users.forEach(async (user) => {
