@@ -87,7 +87,7 @@ export function Signup (): JSX.Element {
     return (
         <div id={styles.page}>
             { signedUp ? 
-                <p className={styles.thankYouText}>thank u bb we will lyk when ur in<br /><br />promise it will be soon</p> : 
+                <p className={styles.thankYouText}>Thanks for signing up for song.haus. You should have received a confirmation text. If you did not, please reach out to us at team@song.haus.</p> : 
                 <div id={styles.signupForm}>
                     <img id={styles.logo} src="/logo.png" alt="logo"/>
 
