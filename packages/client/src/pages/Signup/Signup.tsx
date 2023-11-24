@@ -125,7 +125,7 @@ export function Signup (): JSX.Element {
                     <br/>
                     <input type="submit" value="Submit" onClick={onSubmit}/>
                     <br/>
-                    <span id={styles.messagingTerms}>By providing your phone number, you agree to receive text messages from song.haus. Message and data rates may apply. Message frequency varies.</span>
+                    <span id={styles.messagingTerms}>By providing your phone number, you agree to receive text messages from song.haus. Message and data rates may apply. Message frequency varies. <a href="https://docs.google.com/document/d/12VZQ3QEI59iEJYctsjPm-YuyWO80e9hE2qzJGvNuECA/edit?usp=sharing" target="_blank" rel="noreferrer">Terms and Conditions</a>. <a href="https://docs.google.com/document/d/1tAIHyhzoYazUdb3kNdEVeZMdvtQ29pCSOmb3o_wsTyM/edit?usp=sharing" target="_blank" rel="noreferrer">Privacy Policy</a></span>
                 </div> 
             }
         </div>
