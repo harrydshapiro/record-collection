@@ -17,16 +17,14 @@ export function getCurrentSubmissionRequest() {
     });
 }
 
-export async function getSubmissionRequestToSend() {
-    console.log('Getting unsent daily submission request');
-    const result = await submissionRequestRepository.findOne({
+export function getSubmissionRequestToSend() {
+    return submissionRequestRepository.findOne({
         where: {
             requestedAt: IsNull(),
             scheduledFor: LessThanOrEqual(new Date()),
             isActive: false,
         },
     });
-    return result
 }
 
 export async function turnOffSubmissionRequest(submissionRequest: SubmissionRequest) {

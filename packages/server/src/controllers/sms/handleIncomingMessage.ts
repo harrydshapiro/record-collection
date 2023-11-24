@@ -92,7 +92,7 @@ export default async function handleIncomingMessage(req: any, res: any) {
             );
         } else {
             twimlResponse.message(
-                "Thanks! there's no playlist for today, but your song was added to The Zeitgeist, our running list of all submissions",
+                "thanks! there's no playlist for today, but your song was added to The Zeitgeist, our running list of all submissions",
             );
         }
 

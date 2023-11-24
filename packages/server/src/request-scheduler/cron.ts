@@ -8,13 +8,13 @@ import { userRepository } from 'orm/repositories/user.repository';
 import { sendMessageToPhoneNumber } from 'utils/phone';
 
 async function executeSubmissionRequest() {
-    console.log('Running executeSubmissionRequest', Date.now());
-
     const requestToSend = await getSubmissionRequestToSend();
 
     if (!requestToSend) {
         return;
     }
+
+    console.log("Found submission request to send", { requestToSend })
 
     const currentRequest = await getCurrentSubmissionRequest();
     if (currentRequest) {
