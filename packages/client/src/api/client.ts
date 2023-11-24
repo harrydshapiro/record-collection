@@ -13,12 +13,12 @@ client.interceptors.request.use(function (config) {
     return config
 });
 
-export function submitSignupForm (form: SignupForm) {
-    return client.post('user/signup', form, { headers: { 'Content-Type': 'application/json' }})
-}
-
 export function fetchAllUsers () {
     return client.get('user')
+}
+
+export function submitSignupForm (form: SignupForm) {
+    return client.post('user/signup', form, { headers: { 'Content-Type': 'application/json' }})
 }
 
 export function fetchUserMessages (phoneNumber: string) {
