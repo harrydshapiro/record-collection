@@ -122,7 +122,10 @@ export function Signup (): JSX.Element {
                         <label htmlFor="reference">who told ya about us?</label>
                         <input type="text" name="reference" value={form.reference} onChange={({ target: { value }}) => handleInputChange('reference', value)} />
                     </div>
+                    <br/>
                     <input type="submit" value="Submit" onClick={onSubmit}/>
+                    <br/>
+                    <span id={styles.messagingTerms}>By providing your phone number, you agree to receive text messages from song.haus. Message and data rates may apply. Message frequency varies.</span>
                 </div> 
             }
         </div>
