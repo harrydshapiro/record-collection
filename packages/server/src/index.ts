@@ -14,7 +14,6 @@ import cookieParser from 'cookie-parser'
 import expressSession from 'express-session'
 import postgresSession from 'connect-pg-simple'
 
-
 export const app = express();  
 
 // Ensures async errors in route handling don't hang. 

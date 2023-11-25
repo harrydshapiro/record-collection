@@ -1,38 +1,57 @@
-import { Column, Entity, getRepository, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Message } from "./Message";
+import { Playlist } from "./Playlist";
 
-import { Message } from './Message';
-import { Playlist } from './Playlist';
-
-@Entity()
+@Entity("submission_requests", { schema: "public" })
 export class SubmissionRequest {
-    @Column('varchar', { nullable: false })
-    requestText!: string;
+  @PrimaryGeneratedColumn({ type: "integer", name: "id" })
+  id!: number;
 
-    @ManyToOne(() => Playlist, (playlist) => playlist.submissionRequests)
-    @JoinColumn()
-    playlist!: Playlist;
+  @Column("character varying", { name: "request_text" })
+  requestText!: string;
 
-    @Column('timestamp', { nullable: true })
-    requestedAt?: Date;
+  @Column("timestamp without time zone", {
+    name: "requested_at",
+    nullable: true,
+  })
+  requestedAt?: Date | null;
 
-    @Column('timestamp', { nullable: false })
-    scheduledFor!: Date;
+  @Column("timestamp without time zone", {
+    name: "scheduled_for",
+    nullable: true,
+  })
+  scheduledFor?: Date | null;
 
-    @Column('varchar', { nullable: true })
-    submissionResponse?: string;
+  @Column("character varying", {
+    name: "submission_response",
+    nullable: true,
+    default: () => "''",
+  })
+  submissionResponse?: string | null;
 
-    @Column('boolean', { default: false })
-    isActive!: boolean;
+  @Column("boolean", { name: "is_active", default: () => "false" })
+  isActive!: boolean;
 
-    @PrimaryColumn('int4')
-    id!: number;
+  @Column("character varying", { name: "type", default: () => "'playlist'" })
+  type!: string;
 
-    @Column('varchar', { nullable: false })
-    type!: 'playlist' | 'prompt';
+  @Column("character varying", { name: "media_url", nullable: true })
+  mediaUrl?: string | null;
 
-    @OneToMany(() => Message, (message) => message.submissionRequest)
-    messages!: Array<Message>;
+  @OneToMany(() => Message, (messages) => messages.submissionRequest)
+  messages!: Message[];
 
-    @Column("varchar", { nullable: true })
-    mediaUrl?: string
+  @ManyToOne(() => Playlist, (playlists) => playlists.submissionRequests)
+  @JoinColumn([{ name: "playlist_id", referencedColumnName: "id" }])
+  playlist!: Playlist;
 }
+
+export type ISubmissionRequest = InstanceType<typeof SubmissionRequest>;

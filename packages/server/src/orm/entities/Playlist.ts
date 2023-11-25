@@ -1,24 +1,32 @@
-import { Column, Entity, getRepository, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { SubmissionRequest } from "./SubmissionRequest";
+import { User } from "./User";
 
-import { SubmissionRequest } from './SubmissionRequest';
-import { User } from './User';
-
-@Entity()
+@Entity("playlists", { schema: "public" })
 export class Playlist {
-    @PrimaryColumn('int4')
-    id!: number;
+  @PrimaryGeneratedColumn({ type: "integer", name: "id" })
+  id!: number;
 
-    @Column('varchar', { nullable: false })
-    uri!: string;
+  @Column("character varying", { name: "uri" })
+  uri!: string;
 
-    @Column('varchar', { nullable: false })
-    name!: string;
+  @Column("character varying", { name: "name" })
+  name!: string;
 
-    @OneToMany(() => SubmissionRequest, (submissionRequest) => submissionRequest.playlist)
-    submissionRequests!: Array<SubmissionRequest>;
+  @OneToMany(
+    () => SubmissionRequest,
+    (submissionRequests) => submissionRequests.playlist
+  )
+  submissionRequests!: SubmissionRequest[];
 
-    @OneToOne(() => User, (user) => user.personalPlaylist)
-    user?: User;
+  @OneToMany(() => User, (users) => users.personalPlaylist)
+  users!: User[];
 }
 
-export type IPlaylist = InstanceType<typeof Playlist>
+export type IPlaylist = InstanceType<typeof Playlist>;

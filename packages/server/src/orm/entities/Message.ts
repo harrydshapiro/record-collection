@@ -1,26 +1,38 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { SubmissionRequest } from "./SubmissionRequest";
+import { User } from "./User";
 
-import { SubmissionRequest } from './SubmissionRequest';
-import { User } from './User';
-
-@Entity()
+@Entity("messages", { schema: "public" })
 export class Message {
-    @PrimaryColumn('int4')
-    id!: number;
+  @PrimaryGeneratedColumn({ type: "integer", name: "id" })
+  id!: number;
 
-    @CreateDateColumn({ name: 'created_at' })
-    createdAt!: Date;
+  @Column("timestamp without time zone", {
+    name: "created_at",
+    default: () => "now()",
+  })
+  createdAt!: Date;
 
-    @Column('varchar', { nullable: false })
-    body!: string;
+  @Column("character varying", { name: "body", default: () => "''" })
+  body!: string;
 
-    @ManyToOne(() => SubmissionRequest, (submissionRequest) => submissionRequest.messages)
-    @JoinColumn()
-    submissionRequest?: SubmissionRequest;
+  @ManyToOne(
+    () => SubmissionRequest,
+    (submissionRequests) => submissionRequests.messages
+  )
+  @JoinColumn([{ name: "submission_request_id", referencedColumnName: "id" }])
+  submissionRequest!: SubmissionRequest;
 
-    @ManyToOne(() => User, (user) => user.messages)
-    @JoinColumn()
-    user!: User;
+  @ManyToOne(() => User, (users) => users.messages)
+  @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
+  user!: User;
 }
 
-export type IMessage = InstanceType<typeof Message>
+export type IMessage = InstanceType<typeof Message>;

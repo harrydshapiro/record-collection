@@ -1,10 +1,10 @@
 library(DBI)
 library(RPostgres)
-con <- dbConnect(RPostgres::Postgres(),dbname = '', 
-                 host = '',
+con <- dbConnect(RPostgres::Postgres(),dbname = "",
+                 host = "",
                  port = 5432,
-                 user = '',
-                 password = '')
+                 user = "",
+                 password = "")
 
 dbListTables(con)
 

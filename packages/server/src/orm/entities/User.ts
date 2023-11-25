@@ -1,34 +1,53 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+} from "typeorm";
+import { Message } from "./Message";
+import { Playlist } from "./Playlist";
 
-import { Message } from './Message';
-import { Playlist } from './Playlist';
-
-@Entity()
+@Entity("users", { schema: "public" })
 export class User {
-    @Column('varchar', { nullable: false })
-    firstName!: string;
+  @Column("character varying", { name: "first_name" })
+  firstName!: string;
 
-    @Column('varchar', { nullable: false })
-    lastName!: string;
+  @Column("character varying", { name: "last_name" })
+  lastName!: string;
 
-    @Column('varchar', { nullable: false })
-    spotifyUri!: string;
+  @Column("character varying", { name: "spotify_uri" })
+  spotifyUri!: string;
 
-    @Column('varchar', { nullable: false })
-    phoneNumber!: string;
+  @Column("character varying", { name: "phone_number" })
+  phoneNumber!: string;
 
-    @Column('boolean', { default: false })
-    active!: boolean;
+  @Column("boolean", { name: "active", default: () => "false" })
+  active!: boolean;
 
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
+  @Column("uuid", {
+    primary: true,
+    name: "id",
+    default: () => "gen_random_uuid()",
+  })
+  id!: string;
 
-    @OneToMany(() => Message, (message) => message.user)
-    messages!: Array<Message>;
+  @Column("timestamp without time zone", {
+    name: "created_at",
+    default: () => "now()",
+  })
+  createdAt!: Date;
 
-    @OneToOne(() => Playlist, (playlist) => playlist.user)
-    @JoinColumn()
-    personalPlaylist!: Playlist;
+  @Column("character varying", { name: "reference", nullable: true })
+  reference?: string | null;
+
+  @OneToMany(() => Message, (messages) => messages.user)
+  messages!: Message[];
+
+  @OneToOne(() => Playlist, (playlists) => playlists.users)
+  @JoinColumn([{ name: "personal_playlist_id", referencedColumnName: "id" }])
+  personalPlaylist!: Playlist;
 }
 
-export type IUser = InstanceType<typeof User>
+export type IUser = InstanceType<typeof User>;
