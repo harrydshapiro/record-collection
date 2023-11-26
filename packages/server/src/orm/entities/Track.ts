@@ -1,26 +1,25 @@
 import {
   Column,
   Entity,
-  Index,
   JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn
 } from "typeorm";
 import { Album } from "./Album";
 import { Artist } from "./Artist";
+import { AuditableEntity } from "./AuditableEntity";
+import { SubmittedTrack } from "./SubmittedTrack";
 
 @Entity("tracks", { schema: "public" })
-export class Track {
-  @Column("uuid", {
-    primary: true,
-    name: "id",
-    default: () => "gen_random_uuid()",
-  })
+export class Track extends AuditableEntity<Track> {
+  @PrimaryGeneratedColumn("uuid")
   id!: string;
-
+  
   @Column("character varying", { name: "uri" })
-  ur!: string;
+  uri!: string;
 
   @Column("integer", { name: "duration_ms", nullable: true })
   durationMs?: number | null;
@@ -48,6 +47,9 @@ export class Track {
   @ManyToOne(() => Album, (albums) => albums.tracks)
   @JoinColumn([{ name: "album_id", referencedColumnName: "id" }])
   album!: Album;
+
+  @OneToMany(() => SubmittedTrack, (submittedTrack) => submittedTrack.track)
+  submissions!: SubmittedTrack[]
 }
 
 export type ITrack = InstanceType<typeof Track>;

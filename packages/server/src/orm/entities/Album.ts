@@ -1,11 +1,12 @@
-import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from "typeorm";
+import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Track } from "./Track";
 import { Artist } from "./Artist";
 import { Genre } from "./Genre";
+import { AuditableEntity } from "./AuditableEntity";
 
 @Entity("albums", { schema: "public" })
-export class Album {
-  @Column("uuid", { primary: true, name: "id" })
+export class Album extends AuditableEntity<Album> {
+  @PrimaryGeneratedColumn("uuid")
   id!: string;
 
   @Column("character varying", { name: "name" })

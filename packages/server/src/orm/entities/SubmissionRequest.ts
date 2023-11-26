@@ -9,9 +9,12 @@ import {
 } from "typeorm";
 import { Message } from "./Message";
 import { Playlist } from "./Playlist";
+import { Omit } from "utils/helpers";
+import { AuditableEntity } from "./AuditableEntity";
+import { SubmittedTrack } from "./SubmittedTrack";
 
 @Entity("submission_requests", { schema: "public" })
-export class SubmissionRequest {
+export class SubmissionRequest extends AuditableEntity<SubmissionRequest> {
   @PrimaryGeneratedColumn({ type: "integer", name: "id" })
   id!: number;
 
@@ -52,6 +55,9 @@ export class SubmissionRequest {
   @ManyToOne(() => Playlist, (playlists) => playlists.submissionRequests)
   @JoinColumn([{ name: "playlist_id", referencedColumnName: "id" }])
   playlist!: Playlist;
+
+  @OneToMany(() => SubmittedTrack, (submittedTrack) => submittedTrack.track)
+  submissions!: SubmittedTrack[]
 }
 
 export type ISubmissionRequest = InstanceType<typeof SubmissionRequest>;

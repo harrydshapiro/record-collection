@@ -4,7 +4,8 @@ import { messageRepository } from 'orm/repositories/message.repository';
 import { getCurrentSubmissionRequest } from 'orm/repositories/submissionRequest.repository';
 import { userRepository } from 'orm/repositories/user.repository';
 import { sendMessageToPhoneNumber } from 'utils/phone';
-import { addSongToPlaylist, ZEITGEIST_URI, getPlaylistShareLink } from 'utils/spotify';
+import { addSongToPlaylist, ZEITGEIST_URI, getPlaylistShareLink, persistTrackDataAndRelationsToDb } from 'utils/spotify';
+import { addSubmittedTrack } from 'orm/repositories/submittedTrack.repository';
 
 export default async function handleIncomingMessage(req: any, res: any) {
     const twimlResponse = new twiml.MessagingResponse();
@@ -27,13 +28,6 @@ export default async function handleIncomingMessage(req: any, res: any) {
             phoneNumber: senderPhoneNumber,
         },
     });
-
-    if (messageBody === 'lemme in') {
-        // Generate session
-        // Generate link to SSO page that has session ID in link
-        res.send('')
-        return
-    }
 
     const currentSubmissionRequest = await getCurrentSubmissionRequest();
 
@@ -65,10 +59,7 @@ export default async function handleIncomingMessage(req: any, res: any) {
 
         if (!bodyIsSongLink || !songUri) {
             await sendMessageToPhoneNumber(
-                JSON.stringify({
-                    senderPhoneNumber,
-                    messageBody,
-                }),
+                `Received non-song text to songhaus. You might need to respond to the user.\nSender:\n${senderPhoneNumber}.\nMessage:\n${messageBody}`,
                 '+19176475261',
             );
             return;
@@ -76,13 +67,19 @@ export default async function handleIncomingMessage(req: any, res: any) {
 
         const dailyPlaylistUri = currentSubmissionRequest.playlist?.uri;
 
-        const results = await Promise.allSettled([
+        const [,,,trackPersistAttempt] = await Promise.allSettled([
             addSongToPlaylist(songUri, dailyPlaylistUri),
             addSongToPlaylist(songUri, user.personalPlaylist?.uri),
             addSongToPlaylist(songUri, ZEITGEIST_URI),
+            persistTrackDataAndRelationsToDb(songUri),
         ]);
-
-        console.log('results from incoming sms', results);
+        
+        if (trackPersistAttempt.status === 'fulfilled') {
+            const { track, trackPopularity } = trackPersistAttempt.value
+            await addSubmittedTrack({ trackId: track.id, submissionRequestId: currentSubmissionRequest.id, userId: user.id, popularityAtSubmissionTime: trackPopularity })
+        } else {
+            console.error(`Error submitting track data :(. Reason: ${trackPersistAttempt.reason}`)
+        }
 
         if (dailyPlaylistUri) {
             twimlResponse.message(

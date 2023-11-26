@@ -5,12 +5,18 @@ import {
   JoinColumn,
   OneToMany,
   OneToOne,
+  PrimaryGeneratedColumn
 } from "typeorm";
 import { Message } from "./Message";
 import { Playlist } from "./Playlist";
+import { AuditableEntity } from "./AuditableEntity";
+import { SubmittedTrack } from "./SubmittedTrack";
 
 @Entity("users", { schema: "public" })
-export class User {
+export class User extends AuditableEntity<User> {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
+
   @Column("character varying", { name: "first_name" })
   firstName!: string;
 
@@ -25,13 +31,6 @@ export class User {
 
   @Column("boolean", { name: "active", default: () => "false" })
   active!: boolean;
-
-  @Column("uuid", {
-    primary: true,
-    name: "id",
-    default: () => "gen_random_uuid()",
-  })
-  id!: string;
 
   @Column("timestamp without time zone", {
     name: "created_at",
@@ -48,6 +47,9 @@ export class User {
   @OneToOne(() => Playlist, (playlists) => playlists.users)
   @JoinColumn([{ name: "personal_playlist_id", referencedColumnName: "id" }])
   personalPlaylist!: Playlist;
+
+  @OneToMany(() => SubmittedTrack, (submittedTrack) => submittedTrack.track)
+  trackSubmissions!: SubmittedTrack[]
 }
 
 export type IUser = InstanceType<typeof User>;

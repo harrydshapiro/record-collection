@@ -1,18 +1,15 @@
-import { Column, Entity, Index, JoinTable, ManyToMany } from "typeorm";
+import { Column, Entity, Index, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Album } from "./Album";
 import { Artist } from "./Artist";
+import { AuditableEntity } from "./AuditableEntity";
 
 @Entity("genres", { schema: "public" })
-export class Genre {
+export class Genre extends AuditableEntity<Genre> {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
+  
   @Column("character varying", { name: "name" })
   name!: string;
-
-  @Column("uuid", {
-    primary: true,
-    name: "id",
-    default: () => "gen_random_uuid()",
-  })
-  id!: string;
 
   @ManyToMany(type => Genre)
   @JoinTable({

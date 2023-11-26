@@ -1,22 +1,19 @@
-import { Column, Entity, Index, JoinTable, ManyToMany } from "typeorm";
+import { Column, Entity, Index, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Album } from "./Album";
 import { Genre } from "./Genre";
 import { Track } from "./Track";
+import { AuditableEntity } from "./AuditableEntity";
 
 @Entity("artists", { schema: "public" })
-export class Artist {
+export class Artist extends AuditableEntity<Artist> {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
+
   @Column("character varying", { name: "uri" })
   uri!: string;
 
   @Column("integer", { name: "followers", nullable: true })
   followers?: number | null;
-
-  @Column("uuid", {
-    primary: true,
-    name: "id",
-    default: () => "gen_random_uuid()",
-  })
-  id!: string;
 
   @Column("jsonb", { name: "images", default: [] })
   images!: object;

@@ -1,15 +1,15 @@
 import {
   Column,
   Entity,
-  Index,
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { SubmissionRequest } from "./SubmissionRequest";
 import { User } from "./User";
+import { AuditableEntity } from "./AuditableEntity";
 
 @Entity("playlists", { schema: "public" })
-export class Playlist {
+export class Playlist extends AuditableEntity<Playlist> {
   @PrimaryGeneratedColumn({ type: "integer", name: "id" })
   id!: number;
 
