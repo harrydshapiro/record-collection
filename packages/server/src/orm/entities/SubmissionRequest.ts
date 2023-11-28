@@ -9,7 +9,6 @@ import {
 } from "typeorm";
 import { Message } from "./Message";
 import { Playlist } from "./Playlist";
-import { Omit } from "utils/helpers";
 import { AuditableEntity } from "./AuditableEntity";
 import { SubmittedTrack } from "./SubmittedTrack";
 
