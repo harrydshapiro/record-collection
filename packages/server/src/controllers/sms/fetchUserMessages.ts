@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { messageRepository, queryUserMessages } from "src/orm/repositories/message.repository";
+import { messageRepository, queryUserMessages } from "orm/repositories/message.repository";
 
 export async function fetchUserMessages (req: Request, res: Response, next: NextFunction) {
     const phoneNumber = req.params.phoneNumber;

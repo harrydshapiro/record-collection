@@ -1,5 +1,5 @@
-import { AppDataSource } from 'src/orm/DataSource';
-import { Album } from 'src/orm/entities/Album';
+import { AppDataSource } from 'orm/DataSource';
+import { Album } from 'orm/entities/Album';
 
 const albumRepository = AppDataSource.getRepository(Album);
 

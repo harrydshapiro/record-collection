@@ -1,7 +1,7 @@
 import { IsNull, LessThanOrEqual } from 'typeorm';
 
-import { AppDataSource } from 'src/orm/DataSource';
-import { SubmissionRequest } from 'src/orm/entities/SubmissionRequest';
+import { AppDataSource } from 'orm/DataSource';
+import { SubmissionRequest } from 'orm/entities/SubmissionRequest';
 
 const submissionRequestRepository = AppDataSource.getRepository(SubmissionRequest);
 

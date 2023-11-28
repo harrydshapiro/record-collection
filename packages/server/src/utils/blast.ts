@@ -1,4 +1,4 @@
-import { findAllActiveUsers } from "src/orm/repositories/user.repository"
+import { findAllActiveUsers } from "orm/repositories/user.repository"
 import { sendMessageToPhoneNumber } from "./phone"
 
 export async function sendBlast () {

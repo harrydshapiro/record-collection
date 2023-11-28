@@ -1,6 +1,6 @@
 import Express from "express";
 
-import { userRepository } from "src/orm/repositories/user.repository";
+import { userRepository } from "orm/repositories/user.repository";
 import { sendMessageToPhoneNumber } from "utils/phone";
 import { createSpotifyPlaylist } from "utils/spotify";
 

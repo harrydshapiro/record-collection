@@ -14,7 +14,7 @@ export class Message {
   @PrimaryGeneratedColumn({ type: "integer", name: "id" })
   id!: number;
 
-  @Column("timestamp without time zone", {
+  @Column("timestamp", {
     name: "created_at",
     default: () => "now()",
   })

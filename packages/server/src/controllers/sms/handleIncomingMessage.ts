@@ -1,11 +1,11 @@
 import { twiml } from 'twilio';
 
-import { messageRepository } from 'src/orm/repositories/message.repository';
-import { getCurrentSubmissionRequest } from 'src/orm/repositories/submissionRequest.repository';
-import { userRepository } from 'src/orm/repositories/user.repository';
+import { messageRepository } from 'orm/repositories/message.repository';
+import { getCurrentSubmissionRequest } from 'orm/repositories/submissionRequest.repository';
+import { userRepository } from 'orm/repositories/user.repository';
 import { sendMessageToPhoneNumber } from 'utils/phone';
 import { addSongToPlaylist, ZEITGEIST_URI, getPlaylistShareLink, persistTrackDataAndRelationsToDb } from 'utils/spotify';
-import { addSubmittedTrack } from 'src/orm/repositories/submittedTrack.repository';
+import { addSubmittedTrack } from 'orm/repositories/submittedTrack.repository';
 
 export default async function handleIncomingMessage(req: any, res: any) {
     const twimlResponse = new twiml.MessagingResponse();

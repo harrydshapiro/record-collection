@@ -1,14 +1,14 @@
 import axios from 'axios';
-import { Track } from 'src/orm/entities/Track';
-import { getFullTrackContext, upsertTrack } from 'src/orm/repositories/track.repository';
+import { Track } from 'orm/entities/Track';
+import { getFullTrackContext, upsertTrack } from 'orm/repositories/track.repository';
 import * as Spotify from '@spotify/web-api-ts-sdk';
-import { Album } from 'src/orm/entities/Album';
-import { Genre } from 'src/orm/entities/Genre';
-import { Artist } from 'src/orm/entities/Artist';
-import { upsertAlbum } from 'src/orm/repositories/album.repository';
-import { upsertArtists } from 'src/orm/repositories/artist.repository';
-import { upsertGenres } from 'src/orm/repositories/genre.repository';
-import { messageRepository } from 'src/orm/repositories/message.repository';
+import { Album } from 'orm/entities/Album';
+import { Genre } from 'orm/entities/Genre';
+import { Artist } from 'orm/entities/Artist';
+import { upsertAlbum } from 'orm/repositories/album.repository';
+import { upsertArtists } from 'orm/repositories/artist.repository';
+import { upsertGenres } from 'orm/repositories/genre.repository';
+import { messageRepository } from 'orm/repositories/message.repository';
 import { Like } from 'typeorm';
 import { addSubmittedTrack } from 'orm/repositories/submittedTrack.repository';
 
@@ -113,19 +113,21 @@ export function mapSpotifyArtistToSongHausArtist (spotifyArtist: Spotify.Artist,
     })
 }
 
-export async function backfillDB () {
-    const messages = await messageRepository.find({ where: { body: Like('%track%') } })
-    for (let i = 0; i < 10; i++) {
-        const message = messages[i]
-        const trackId = new URL(message.body).pathname.split('/').pop()
-        if (trackId) {
-            const matchingTrack = await getFullTrackContext(trackId)
-            if (matchingTrack) {
-                await addSubmittedTrack({ trackId, userId: message.user.id, submissionRequestId: message.submissionRequest.id, popularityAtSubmissionTime: 101 })
-            } else {
-                // error log so that i can backfill these
-                console.error('test error', i, message.body)
-            }
-        }
-    }
-}
+// export async function backfillDB () {
+//     const messages = await messageRepository.find({ where: { body: Like('%track%') }, relations: ['user', 'submissionRequest'] })
+//     for (let i = 0; i < messages.length; i++) {
+//         const message = messages[i]
+//         const trackId = new URL(message.body).pathname.split('/').pop()
+//         if (trackId) {
+//             const matchingTrack = await getFullTrackContext(`spotify:track:${trackId}`)
+//             try {
+//                 if (matchingTrack) {
+//                     await addSubmittedTrack({ trackId: matchingTrack.id, userId: message.user?.id, submissionRequestId: message.submissionRequest.id, popularityAtSubmissionTime: 101 })
+//                     console.log(i, 'Submitted track:', trackId, 'Message:', message.id)
+//                 }
+//             } catch (err) {
+//                 console.error(trackId, err)
+//             }
+//         }
+//     }
+// }

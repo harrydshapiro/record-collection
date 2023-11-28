@@ -1,5 +1,5 @@
-import { AppDataSource } from 'src/orm/DataSource';
-import { Artist } from 'src/orm/entities/Artist';
+import { AppDataSource } from 'orm/DataSource';
+import { Artist } from 'orm/entities/Artist';
 
 const artistRepository = AppDataSource.getRepository(Artist);
 

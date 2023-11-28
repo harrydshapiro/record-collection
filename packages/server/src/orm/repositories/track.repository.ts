@@ -1,5 +1,5 @@
-import { AppDataSource } from 'src/orm/DataSource';
-import { Track } from 'src/orm/entities/Track';
+import { AppDataSource } from 'orm/DataSource';
+import { Track } from 'orm/entities/Track';
 
 const trackRepository = AppDataSource.getRepository(Track);
 

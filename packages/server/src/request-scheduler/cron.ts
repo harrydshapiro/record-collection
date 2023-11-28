@@ -3,8 +3,8 @@ import {
     getSubmissionRequestToSend,
     turnOffSubmissionRequest,
     turnOnSubmissionRequest,
-} from 'src/orm/repositories/submissionRequest.repository';
-import { userRepository } from 'src/orm/repositories/user.repository';
+} from 'orm/repositories/submissionRequest.repository';
+import { userRepository } from 'orm/repositories/user.repository';
 import { sendMessageToPhoneNumber } from 'utils/phone';
 
 async function executeSubmissionRequest() {
