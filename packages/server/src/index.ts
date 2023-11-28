@@ -6,13 +6,14 @@ import morgan from 'morgan';
 import path from 'path'
 import 'express-async-errors'
 
-import { dbCreateConnection } from 'orm/DataSource';
+import { dbCreateConnection } from 'src/orm/DataSource';
 import { startCron } from 'request-scheduler/cron';
 import routes from 'routes/index';
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import expressSession from 'express-session'
 import postgresSession from 'connect-pg-simple'
+import { backfillDB } from 'utils/spotify';
 
 export const app = express();  
 
@@ -68,5 +69,7 @@ app.listen(port, () => {
 
     if (process.env.NODE_ENV === 'production') {
         startCron();
+    } else {
+        backfillDB()
     }
 })();

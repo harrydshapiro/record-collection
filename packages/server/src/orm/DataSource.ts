@@ -2,7 +2,7 @@ import { join } from 'path';
 
 import { DataSource } from 'typeorm';
 
-import { SnakeCaseNamingStrategy } from 'orm/namingStrategy';
+import { SnakeCaseNamingStrategy } from 'src/orm/namingStrategy';
 
 const entitiesDir = join(__dirname, 'entities/*.{ts,js}');
 console.log('entities dir is', entitiesDir);

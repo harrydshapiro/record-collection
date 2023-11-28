@@ -21,13 +21,13 @@ export class Track extends AuditableEntity<Track> {
   @Column("character varying", { name: "uri" })
   uri!: string;
 
-  @Column("integer", { name: "duration_ms", nullable: true })
+  @Column("character varying", { name: "name" })
+  name!: string;
+
+  @Column("integer", { name: "duration_ms" })
   durationMs?: number | null;
 
-  @Column("integer", { name: "popularity", nullable: true })
-  popularity?: number | null;
-
-  @Column("integer", { name: "track_number", nullable: true })
+  @Column("integer", { name: "track_number" })
   trackNumber?: number | null;
 
   @ManyToMany(type => Artist)
@@ -50,6 +50,39 @@ export class Track extends AuditableEntity<Track> {
 
   @OneToMany(() => SubmittedTrack, (submittedTrack) => submittedTrack.track)
   submissions!: SubmittedTrack[]
+
+  @Column("numeric")
+  acousticness!: number;
+
+  @Column("numeric")
+  energy!: number;
+
+  @Column("numeric")
+  danceability!: number;
+
+  @Column("numeric")
+  key!: number;
+
+  @Column("numeric")
+  liveness!: number;
+
+  @Column("numeric")
+  loudness!: number;
+
+  @Column("numeric")
+  mode!: number;
+
+  @Column("numeric")
+  speechiness!: number;
+
+  @Column("numeric")
+  tempo!: number;
+
+  @Column("numeric", { name: "time_signature" })
+  timeSignature!: number;
+
+  @Column("numeric")
+  valence!: number;
 }
 
 export type ITrack = InstanceType<typeof Track>;

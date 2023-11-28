@@ -1,5 +1,18 @@
 import axios from 'axios';
-import { Track } from 'orm/entities/Track';
+import { Track } from 'src/orm/entities/Track';
+import { getFullTrackContext, upsertTrack } from 'src/orm/repositories/track.repository';
+import * as Spotify from '@spotify/web-api-ts-sdk';
+import { Album } from 'src/orm/entities/Album';
+import { Genre } from 'src/orm/entities/Genre';
+import { Artist } from 'src/orm/entities/Artist';
+import { upsertAlbum } from 'src/orm/repositories/album.repository';
+import { upsertArtists } from 'src/orm/repositories/artist.repository';
+import { upsertGenres } from 'src/orm/repositories/genre.repository';
+import { messageRepository } from 'src/orm/repositories/message.repository';
+import { Like } from 'typeorm';
+import { addSubmittedTrack } from 'orm/repositories/submittedTrack.repository';
+
+const sdk = Spotify.SpotifyApi.withClientCredentials(process.env.SPOTIFY_CLIENT_ID!, process.env.SPOTIFY_CLIENT_SECRET!);
 
 export const ZEITGEIST_URI = '7tSOhMZxJRbqBgVMMUzxnR';
 
@@ -25,13 +38,94 @@ export function getPlaylistShareLink(uri: string) {
     return `https://open.spotify.com/playlist/${uri}`;
 }
 
+export async function persistTrackDataAndRelationsToDb(trackUri: string): Promise<{ track: Track, trackPopularity: number }> {
+    const spotifyTrack = await sdk.tracks.get(trackUri)
+    const spotifyTrackAudioFeatures = await sdk.tracks.audioFeatures(trackUri)
+    const spotifyAlbum = await sdk.albums.get(spotifyTrack.album.id)
+    const spotifyArtists = await Promise.all(spotifyTrack.artists.map(({ id }) => sdk.artists.get(id)))
 
+    const songhausArtists: Artist[] = []
+    for (const artist of spotifyArtists) {
+        const genres = await upsertGenres(artist.genres.map(mapSpotifyGenreToSongHausGenre))
+        songhausArtists.push(mapSpotifyArtistToSongHausArtist(artist, genres))
+    }
+    const upsertedArtists = await upsertArtists(songhausArtists)
+
+    const songhausAlbum = mapSpotifyAlbumToSongHausAlbum(spotifyAlbum, upsertedArtists)
+    const upsertedAlbum = await upsertAlbum(songhausAlbum)
+
+    const songhausTrack = mapSpotifyTrackToSongHausTrack(spotifyTrack, upsertedAlbum, upsertedArtists, spotifyTrackAudioFeatures)
+    const upsertedTrack = await upsertTrack(songhausTrack)
+    return { track: upsertedTrack, trackPopularity: spotifyTrack.popularity }
+}
+
+export function mapSpotifyTrackToSongHausTrack (spotifyTrack: Spotify.Track, album: Pick<Album, 'id'>, artists: Pick<Artist, 'id'>[], audioFeatures: Spotify.AudioFeatures) {
+    return new Track({
+        uri: spotifyTrack.uri,
+        durationMs: spotifyTrack.duration_ms,
+        trackNumber: spotifyTrack.track_number,
+        name: spotifyTrack.name,
+        album: album as Album,
+        artists: artists as Artist[],
+        danceability: audioFeatures.danceability,
+        key: audioFeatures.key,
+        liveness: audioFeatures.liveness,
+        loudness: audioFeatures.loudness,
+        mode: audioFeatures.mode,
+        speechiness: audioFeatures.speechiness,
+        tempo: audioFeatures.tempo,
+        timeSignature: audioFeatures.time_signature,
+        valence: audioFeatures.valence,
+        acousticness: audioFeatures.acousticness,
+        energy: audioFeatures.energy
+    })
+}
+
+export function mapSpotifyAlbumToSongHausAlbum (spotifyAlbum: Spotify.Album, artists: Pick<Artist, 'id'>[]) {
+    return new Album({
+        name: spotifyAlbum.name,
+        uri: spotifyAlbum.uri,
+        images: spotifyAlbum.images,
+        releaseDate: new Date(spotifyAlbum.release_date),
+        popularity: spotifyAlbum.popularity,
+        artists: artists as Artist[]
+    })
+}
+
+export function mapSpotifyGenreToSongHausGenre (spotifyGenre: string) {
+    return new Genre({ name: spotifyGenre })
+}
 
 /**
- * Determines what data related to a given track is missing from our DB,
- * fetches it, and adds it to the DB.
+ * For now, this is just used when mapping a Spotify track to a SongHaus track. It omits some relations as a result.
+ * 
+ * @param spotifyArtist This should be a full - not simplied - artist from the Spotify API
+ * @returns An Artist entity *without* track or album relations
  */
-export async function persistTrackDataAndRelationsToDb(songUri: string): Promise<{ track: Track, trackPopularity: number }> {
-    // TODO: Actually implement fetching from Spotify :) and whatnot
-    return Promise.resolve({ track: new Track(), trackPopularity: 0 })
+export function mapSpotifyArtistToSongHausArtist (spotifyArtist: Spotify.Artist, genres: Pick<Genre, 'id'>[]) {
+    return new Artist({
+        uri: spotifyArtist.uri,
+        name: spotifyArtist.name,
+        followers: spotifyArtist.followers.total,
+        images: spotifyArtist.images,
+        popularity: spotifyArtist.popularity,
+        genres: genres as Genre[]
+    })
+}
+
+export async function backfillDB () {
+    const messages = await messageRepository.find({ where: { body: Like('%track%') } })
+    for (let i = 0; i < 10; i++) {
+        const message = messages[i]
+        const trackId = new URL(message.body).pathname.split('/').pop()
+        if (trackId) {
+            const matchingTrack = await getFullTrackContext(trackId)
+            if (matchingTrack) {
+                await addSubmittedTrack({ trackId, userId: message.user.id, submissionRequestId: message.submissionRequest.id, popularityAtSubmissionTime: 101 })
+            } else {
+                // error log so that i can backfill these
+                console.error('test error', i, message.body)
+            }
+        }
+    }
 }

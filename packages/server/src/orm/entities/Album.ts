@@ -13,7 +13,7 @@ export class Album extends AuditableEntity<Album> {
   name!: string;
 
   @Column("jsonb", { name: "images", default: [] })
-  images!: object;
+  images!: { url: string, height: number, width: number }[];
 
   @Column("timestamp without time zone", {
     name: "release_date",
@@ -24,7 +24,7 @@ export class Album extends AuditableEntity<Album> {
   @Column("integer", { name: "popularity", nullable: true })
   popularity?: number | null;
 
-  @Column("character varying", { name: "uri" })
+  @Column("character varying", { name: "uri", unique: true })
   uri!: string;
 
   @ManyToMany(type => Artist)
@@ -40,20 +40,6 @@ export class Album extends AuditableEntity<Album> {
       }
   })
   artists!: Artist[];
-
-  @ManyToMany(type => Genre)
-  @JoinTable({
-      name: "albums_genres",
-      joinColumn: {
-        name: "album_id",
-        referencedColumnName: "id"
-      },
-      inverseJoinColumn: {
-        name: "genre_id",
-        referencedColumnName: "id"
-      }
-  })
-  genres!: Genre[];
 
   @OneToMany(() => Track, (tracks) => tracks.album)
   tracks!: Track[];

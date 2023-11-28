@@ -3,8 +3,8 @@ import {
     getSubmissionRequestToSend,
     turnOffSubmissionRequest,
     turnOnSubmissionRequest,
-} from 'orm/repositories/submissionRequest.repository';
-import { userRepository } from 'orm/repositories/user.repository';
+} from 'src/orm/repositories/submissionRequest.repository';
+import { userRepository } from 'src/orm/repositories/user.repository';
 import { sendMessageToPhoneNumber } from 'utils/phone';
 
 async function executeSubmissionRequest() {
@@ -26,8 +26,7 @@ async function executeSubmissionRequest() {
 
     users.forEach(async (user) => {
         const body = `${user.firstName} !!! it's time :)\n\n${requestText}`;
-        const result = await sendMessageToPhoneNumber(body, user.phoneNumber);
-        return result;
+        sendMessageToPhoneNumber(body, user.phoneNumber);
     });
 }
 

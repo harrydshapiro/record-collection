@@ -1,5 +1,5 @@
-import { AppDataSource } from 'orm/DataSource';
-import { User } from 'orm/entities/User';
+import { AppDataSource } from 'src/orm/DataSource';
+import { User } from 'src/orm/entities/User';
 
 export const userRepository = AppDataSource.getRepository(User);
 

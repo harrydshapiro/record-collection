@@ -1,11 +1,11 @@
 import { twiml } from 'twilio';
 
-import { messageRepository } from 'orm/repositories/message.repository';
-import { getCurrentSubmissionRequest } from 'orm/repositories/submissionRequest.repository';
-import { userRepository } from 'orm/repositories/user.repository';
+import { messageRepository } from 'src/orm/repositories/message.repository';
+import { getCurrentSubmissionRequest } from 'src/orm/repositories/submissionRequest.repository';
+import { userRepository } from 'src/orm/repositories/user.repository';
 import { sendMessageToPhoneNumber } from 'utils/phone';
 import { addSongToPlaylist, ZEITGEIST_URI, getPlaylistShareLink, persistTrackDataAndRelationsToDb } from 'utils/spotify';
-import { addSubmittedTrack } from 'orm/repositories/submittedTrack.repository';
+import { addSubmittedTrack } from 'src/orm/repositories/submittedTrack.repository';
 
 export default async function handleIncomingMessage(req: any, res: any) {
     const twimlResponse = new twiml.MessagingResponse();
@@ -67,19 +67,20 @@ export default async function handleIncomingMessage(req: any, res: any) {
 
         const dailyPlaylistUri = currentSubmissionRequest.playlist?.uri;
 
-        const [,,,trackPersistAttempt] = await Promise.allSettled([
+        await Promise.allSettled([
             addSongToPlaylist(songUri, dailyPlaylistUri),
             addSongToPlaylist(songUri, user.personalPlaylist?.uri),
             addSongToPlaylist(songUri, ZEITGEIST_URI),
-            persistTrackDataAndRelationsToDb(songUri),
         ]);
-        
-        if (trackPersistAttempt.status === 'fulfilled') {
-            const { track, trackPopularity } = trackPersistAttempt.value
-            await addSubmittedTrack({ trackId: track.id, submissionRequestId: currentSubmissionRequest.id, userId: user.id, popularityAtSubmissionTime: trackPopularity })
-        } else {
-            console.error(`Error submitting track data :(. Reason: ${trackPersistAttempt.reason}`)
-        }
+
+        persistTrackDataAndRelationsToDb(songUri)
+            .then(async ({ track, trackPopularity }) => {
+                // TODO - I HAVENT ACTUALLY TESTED THAT THIS LINE WORKS...
+                await addSubmittedTrack({ trackId: track.id, submissionRequestId: currentSubmissionRequest.id, userId: user.id, popularityAtSubmissionTime: trackPopularity })
+            }).catch((err) => {
+                console.error("Error attempting to persist track data that was submitted to the DB")
+                console.error(err)
+            })
 
         if (dailyPlaylistUri) {
             twimlResponse.message(

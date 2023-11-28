@@ -1,4 +1,4 @@
-import { Column, Entity, Index, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, JoinTable, ManyToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { Album } from "./Album";
 import { Genre } from "./Genre";
 import { Track } from "./Track";
@@ -9,14 +9,14 @@ export class Artist extends AuditableEntity<Artist> {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column("character varying", { name: "uri" })
+  @Column("character varying", { name: "uri", unique: true })
   uri!: string;
 
   @Column("integer", { name: "followers", nullable: true })
   followers?: number | null;
 
   @Column("jsonb", { name: "images", default: [] })
-  images!: object;
+  images!: { url: string, height: number, width: number }[];
 
   @Column("character varying", { name: "name" })
   name!: string;
@@ -24,27 +24,15 @@ export class Artist extends AuditableEntity<Artist> {
   @Column("integer", { name: "popularity", nullable: true })
   popularity?: number | null;
 
-  @Column("timestamp without time zone", {
-    name: "created_at",
-    default: () => "now()",
-  })
-  createdAt!: Date;
-
-  @Column("timestamp without time zone", {
-    name: "updated_at",
-    default: () => "now()",
-  })
-  updatedAt!: Date;
-
   @ManyToMany(type => Album)
   @JoinTable({
       name: "albums_artists",
       joinColumn: {
-        name: "artists",
+        name: "artist_id",
         referencedColumnName: "id"
       },
       inverseJoinColumn: {
-        name: "albums",
+        name: "album_id",
         referencedColumnName: "id"
       }
   })

@@ -1,8 +1,8 @@
-import { AppDataSource } from 'orm/DataSource';
-import { SubmissionRequest } from 'orm/entities/SubmissionRequest';
-import { SubmittedTrack } from 'orm/entities/SubmittedTrack';
-import { Track } from 'orm/entities/Track';
-import { User } from 'orm/entities/User';
+import { AppDataSource } from 'src/orm/DataSource';
+import { SubmissionRequest } from 'src/orm/entities/SubmissionRequest';
+import { SubmittedTrack } from 'src/orm/entities/SubmittedTrack';
+import { Track } from 'src/orm/entities/Track';
+import { User } from 'src/orm/entities/User';
 
 const submittedTrackRepository = AppDataSource.getRepository(SubmittedTrack);
 

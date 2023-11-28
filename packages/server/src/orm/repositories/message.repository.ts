@@ -1,5 +1,5 @@
-import { AppDataSource } from 'orm/DataSource';
-import { Message } from 'orm/entities/Message';
+import { AppDataSource } from 'src/orm/DataSource';
+import { Message } from 'src/orm/entities/Message';
 
 export const messageRepository = AppDataSource.getRepository(Message);
 

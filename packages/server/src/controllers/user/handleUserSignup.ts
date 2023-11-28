@@ -1,7 +1,7 @@
 import Express from "express";
 import { parsePhoneNumber } from "libphonenumber-js";
 
-import { userRepository } from "orm/repositories/user.repository";
+import { userRepository } from "src/orm/repositories/user.repository";
 import { sendMessageToPhoneNumber } from "utils/phone";
 
 export default async function handleUserSignup(
