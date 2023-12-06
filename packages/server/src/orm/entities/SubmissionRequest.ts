@@ -13,7 +13,7 @@ import { SubmittedTrack } from "./SubmittedTrack";
 
 @Entity("submission_requests", { schema: "public" })
 export class SubmissionRequest extends AuditableEntity<SubmissionRequest> {
-  @PrimaryGeneratedColumn({ type: "integer", name: "id" })
+  @PrimaryGeneratedColumn("increment")
   id!: number;
 
   @Column("character varying", { name: "request_text" })
