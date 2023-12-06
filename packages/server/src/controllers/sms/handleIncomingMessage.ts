@@ -11,10 +11,7 @@ import {
   getPlaylistShareLink,
   persistTrackDataAndRelationsToDb,
 } from "utils/spotify";
-import {
-  addSubmittedTrack,
-  getSubmittedTracksForSubmissionRequest,
-} from "orm/repositories/submittedTrack.repository";
+import { addSubmittedTrack } from "orm/repositories/submittedTrack.repository";
 
 const MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST = 3;
 
@@ -110,9 +107,7 @@ export default async function handleIncomingMessage(
         console.error(err);
       });
 
-    const submittedTracksSoFar = await getSubmittedTracksForSubmissionRequest(
-      currentSubmissionRequest.id,
-    );
+    const previousSubmittedTracks = currentSubmissionRequest.submissions;
     const dailyPlaylistShareMessage = `${
       currentSubmissionRequest.submissionResponse
     }\n\nYou can find today's playlist here: ${getPlaylistShareLink(
@@ -123,17 +118,21 @@ export default async function handleIncomingMessage(
       ZEITGEIST_URI,
     )}`;
     const responseText = dailyPlaylistUri
-      ? submittedTracksSoFar.length >=
+      ? previousSubmittedTracks.length >=
         MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST
         ? dailyPlaylistShareMessage
         : dailyPlaylistWaitMessage
       : zeitgeistShareMessage;
     twimlResponse.message(responseText);
+    console.log("Determined response text", {
+      responseText,
+      previousSubmittedTracksCount: previousSubmittedTracks.length,
+    });
     if (
-      submittedTracksSoFar.length ===
+      previousSubmittedTracks.length ===
       MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST
     ) {
-      const allPreviousSubmitors = submittedTracksSoFar.reduce(
+      const allPreviousSubmitors = previousSubmittedTracks.reduce(
         (acc: string[], curr) => {
           if (
             curr.user.phoneNumber !== senderPhoneNumber &&
@@ -145,6 +144,7 @@ export default async function handleIncomingMessage(
         },
         [],
       );
+      console.log("Previous submittors to send to", allPreviousSubmitors);
       void Promise.allSettled(
         allPreviousSubmitors.map((phoneNumber) =>
           sendMessageToPhoneNumber(

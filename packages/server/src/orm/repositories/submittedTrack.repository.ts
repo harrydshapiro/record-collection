@@ -1,5 +1,4 @@
 import { AppDataSource } from "orm/DataSource";
-import { SubmissionRequest } from "orm/entities/SubmissionRequest";
 import { SubmittedTrack } from "orm/entities/SubmittedTrack";
 
 const submittedTrackRepository = AppDataSource.getRepository(SubmittedTrack);
