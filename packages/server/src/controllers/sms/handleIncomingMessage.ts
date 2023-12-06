@@ -7,6 +7,8 @@ import { sendMessageToPhoneNumber } from 'utils/phone';
 import { addSongToPlaylist, ZEITGEIST_URI, getPlaylistShareLink, persistTrackDataAndRelationsToDb } from 'utils/spotify';
 import { addSubmittedTrack } from 'orm/repositories/submittedTrack.repository';
 
+const MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST = 5;
+
 export default async function handleIncomingMessage(req: any, res: any) {
     const twimlResponse = new twiml.MessagingResponse();
     const { Body: messageBody, From: senderPhoneNumber } = req.body;
@@ -73,25 +75,37 @@ export default async function handleIncomingMessage(req: any, res: any) {
             addSongToPlaylist(songUri, ZEITGEIST_URI),
         ]);
 
-        persistTrackDataAndRelationsToDb(songUri)
+        await persistTrackDataAndRelationsToDb(songUri)
             .then(async ({ track, trackPopularity }) => {
                 // TODO - I HAVENT ACTUALLY TESTED THAT THIS LINE WORKS...
-                await addSubmittedTrack({ trackId: track.id, submissionRequestId: currentSubmissionRequest.id, userId: user.id, popularityAtSubmissionTime: trackPopularity })
+                return addSubmittedTrack({ trackId: track.id, submissionRequestId: currentSubmissionRequest.id, userId: user.id, popularityAtSubmissionTime: trackPopularity })
             }).catch((err) => {
                 console.error("Error attempting to persist track data that was submitted to the DB")
                 console.error(err)
             })
 
-        if (dailyPlaylistUri) {
-            twimlResponse.message(
-                `${
-                    currentSubmissionRequest.submissionResponse
-                }\n\nYou can find today's playlist here: ${getPlaylistShareLink(dailyPlaylistUri)}`,
-            );
-        } else {
-            twimlResponse.message(
-                "thanks! there's no playlist for today, but your song was added to The Zeitgeist, our running list of all submissions",
-            );
+        const messagesSoFar = await messageRepository.find({ where: { submissionRequest: { id: currentSubmissionRequest.id } }})
+        const dailyPlaylistShareMessage = `${currentSubmissionRequest.submissionResponse}\n\nYou can find today's playlist here: ${getPlaylistShareLink(dailyPlaylistUri)}`
+        const dailyPlaylistWaitMessage = `${currentSubmissionRequest.submissionResponse}\n\nYou're one of the first submitters. We'll hyu when there's a critical mass of submissions ;)`
+        const zeitgeistShareMessage = `thanks! there's no playlist for today, but your song was added to The Zeitgeist, our running list of all submissions: ${getPlaylistShareLink(ZEITGEIST_URI)}`
+        const responseText = 
+            dailyPlaylistUri 
+                ? messagesSoFar.length >= MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST 
+                    ? dailyPlaylistShareMessage 
+                    : dailyPlaylistWaitMessage
+                : zeitgeistShareMessage
+        twimlResponse.message(responseText);
+        if (messagesSoFar.length === MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST) {
+            const allPreviousSubmitors = messagesSoFar.reduce((acc: string[], curr) => {
+                if (curr.user.phoneNumber !== senderPhoneNumber && !acc.includes(curr.user.phoneNumber)) {
+                    acc.push(curr.user.phoneNumber)
+                }
+                return acc
+            }, [])
+            Promise.allSettled(allPreviousSubmitors.map(phoneNumber => sendMessageToPhoneNumber(`You can find today's playlist here: ${getPlaylistShareLink(dailyPlaylistUri)}`, phoneNumber).catch(e => {
+                console.error('There was an error sending a playlist to an early submittor')
+                console.error(e)
+            })))
         }
 
         res.type('text/xml').send(twimlResponse.toString());

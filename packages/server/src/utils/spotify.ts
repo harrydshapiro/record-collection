@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Track } from 'orm/entities/Track';
-import { getFullTrackContext, upsertTrack } from 'orm/repositories/track.repository';
+import { upsertTrack } from 'orm/repositories/track.repository';
 import * as Spotify from '@spotify/web-api-ts-sdk';
 import { Album } from 'orm/entities/Album';
 import { Genre } from 'orm/entities/Genre';
@@ -8,9 +8,6 @@ import { Artist } from 'orm/entities/Artist';
 import { upsertAlbum } from 'orm/repositories/album.repository';
 import { upsertArtists } from 'orm/repositories/artist.repository';
 import { upsertGenres } from 'orm/repositories/genre.repository';
-import { messageRepository } from 'orm/repositories/message.repository';
-import { Like } from 'typeorm';
-import { addSubmittedTrack } from 'orm/repositories/submittedTrack.repository';
 
 const sdk = Spotify.SpotifyApi.withClientCredentials(process.env.SPOTIFY_CLIENT_ID!, process.env.SPOTIFY_CLIENT_SECRET!);
 
