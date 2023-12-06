@@ -14,7 +14,12 @@ export function getCurrentSubmissionRequest() {
     order: {
       requestedAt: "DESC",
     },
-    relations: ["playlist", "submissions"],
+    relations: {
+      playlist: true,
+      submissions: {
+        user: true,
+      },
+    },
   });
 }
 

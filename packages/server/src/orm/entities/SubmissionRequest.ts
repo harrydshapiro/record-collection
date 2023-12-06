@@ -13,7 +13,7 @@ import { SubmittedTrack } from "./SubmittedTrack";
 
 @Entity("submission_requests", { schema: "public" })
 export class SubmissionRequest extends AuditableEntity<SubmissionRequest> {
-  @PrimaryGeneratedColumn("increment")
+  @PrimaryGeneratedColumn({ type: "int4", name: "id" })
   id!: number;
 
   @Column("character varying", { name: "request_text" })
@@ -54,7 +54,10 @@ export class SubmissionRequest extends AuditableEntity<SubmissionRequest> {
   @JoinColumn([{ name: "playlist_id", referencedColumnName: "id" }])
   playlist!: Playlist;
 
-  @OneToMany(() => SubmittedTrack, (submittedTrack) => submittedTrack.track)
+  @OneToMany(
+    () => SubmittedTrack,
+    (submittedTrack) => submittedTrack.submissionRequest,
+  )
   submissions!: SubmittedTrack[];
 }
 

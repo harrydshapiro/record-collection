@@ -13,7 +13,7 @@ let sdk: Spotify.SpotifyApi;
 function initSdk() {
   sdk = Spotify.SpotifyApi.withClientCredentials(
     process.env.SPOTIFY_CLIENT_ID || "",
-    process.env.SPOTIFY_CLIENT_SECRET,
+    process.env.SPOTIFY_CLIENT_SECRET || "",
   );
 }
 initSdk();
@@ -58,14 +58,14 @@ export function getPlaylistShareLink(uri: string) {
 export async function persistTrackDataAndRelationsToDb(
   trackUri: string,
 ): Promise<{ track: Track; trackPopularity: number }> {
-  async function attempt () {
+  async function attempt() {
     const spotifyTrack = await sdk.tracks.get(trackUri);
     const spotifyTrackAudioFeatures = await sdk.tracks.audioFeatures(trackUri);
     const spotifyAlbum = await sdk.albums.get(spotifyTrack.album.id);
     const spotifyArtists = await Promise.all(
       spotifyTrack.artists.map(({ id }) => sdk.artists.get(id)),
     );
-  
+
     const songhausArtists: Artist[] = [];
     for (const artist of spotifyArtists) {
       const genres = await upsertGenres(
@@ -74,13 +74,13 @@ export async function persistTrackDataAndRelationsToDb(
       songhausArtists.push(mapSpotifyArtistToSongHausArtist(artist, genres));
     }
     const upsertedArtists = await upsertArtists(songhausArtists);
-  
+
     const songhausAlbum = mapSpotifyAlbumToSongHausAlbum(
       spotifyAlbum,
       upsertedArtists,
     );
     const upsertedAlbum = await upsertAlbum(songhausAlbum);
-  
+
     const songhausTrack = mapSpotifyTrackToSongHausTrack(
       spotifyTrack,
       upsertedAlbum,
@@ -91,10 +91,10 @@ export async function persistTrackDataAndRelationsToDb(
     return { track: upsertedTrack, trackPopularity: spotifyTrack.popularity };
   }
   try {
-    return await attempt()
+    return await attempt();
   } catch (err) {
-    initSdk()
-    return attempt()
+    initSdk();
+    return attempt();
   }
 }
 
