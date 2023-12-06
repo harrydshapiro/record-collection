@@ -1,5 +1,10 @@
-import { Column, Entity, Index, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Album } from "./Album";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Artist } from "./Artist";
 import { AuditableEntity } from "./AuditableEntity";
 
@@ -7,21 +12,21 @@ import { AuditableEntity } from "./AuditableEntity";
 export class Genre extends AuditableEntity<Genre> {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
-  
+
   @Column("character varying", { name: "name" })
   name!: string;
 
-  @ManyToMany(type => Genre)
+  @ManyToMany(() => Genre)
   @JoinTable({
-      name: "artists_genres",
-      joinColumn: {
-        name: "genre_id",
-        referencedColumnName: "id"
-      },
-      inverseJoinColumn: {
-        name: "artist_id",
-        referencedColumnName: "id"
-      }
+    name: "artists_genres",
+    joinColumn: {
+      name: "genre_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "artist_id",
+      referencedColumnName: "id",
+    },
   })
   artists!: Artist[];
 }

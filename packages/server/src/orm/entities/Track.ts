@@ -6,7 +6,7 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Album } from "./Album";
 import { Artist } from "./Artist";
@@ -17,7 +17,7 @@ import { SubmittedTrack } from "./SubmittedTrack";
 export class Track extends AuditableEntity<Track> {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
-  
+
   @Column("character varying", { name: "uri" })
   uri!: string;
 
@@ -30,17 +30,17 @@ export class Track extends AuditableEntity<Track> {
   @Column("integer", { name: "track_number" })
   trackNumber?: number | null;
 
-  @ManyToMany(type => Artist)
+  @ManyToMany(() => Artist)
   @JoinTable({
-      name: "artists_tracks",
-      joinColumn: {
-        name: "track_id",
-        referencedColumnName: "id"
-      },
-      inverseJoinColumn: {
-        name: "artist_id",
-        referencedColumnName: "id"
-      }
+    name: "artists_tracks",
+    joinColumn: {
+      name: "track_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "artist_id",
+      referencedColumnName: "id",
+    },
   })
   artists!: Artist[];
 
@@ -49,7 +49,7 @@ export class Track extends AuditableEntity<Track> {
   album!: Album;
 
   @OneToMany(() => SubmittedTrack, (submittedTrack) => submittedTrack.track)
-  submissions!: SubmittedTrack[]
+  submissions!: SubmittedTrack[];
 
   @Column("numeric")
   acousticness!: number;

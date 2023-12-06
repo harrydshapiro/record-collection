@@ -7,8 +7,12 @@ import { internalApiKeyMiddleware } from "auth/internalApiKey.middleware";
 
 const userRouter = Router();
 
-userRouter.post('/signup', handleUserSignup)
-userRouter.post('/admit/:phoneNumber', internalApiKeyMiddleware, handleUserAdmit)
-userRouter.get('/', internalApiKeyMiddleware, fetchAllUsers)
+userRouter.post("/signup", handleUserSignup);
+userRouter.post(
+  "/admit/:phoneNumber",
+  internalApiKeyMiddleware,
+  handleUserAdmit,
+);
+userRouter.get("/", internalApiKeyMiddleware, fetchAllUsers);
 
-export default userRouter
+export default userRouter;

@@ -3,7 +3,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { AuditableEntity } from "./AuditableEntity";
 import { Track } from "./Track";
@@ -14,18 +14,21 @@ import { SubmissionRequest } from "./SubmissionRequest";
 export class SubmittedTrack extends AuditableEntity<SubmittedTrack> {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
-  
+
   @ManyToOne(() => Track, (track) => track.submissions)
   @JoinColumn([{ name: "track_id", referencedColumnName: "id" }])
-  track!: Track
+  track!: Track;
 
   @ManyToOne(() => User, (user) => user.trackSubmissions)
   @JoinColumn([{ name: "user_id", referencedColumnName: "id" }])
-  user!: User
+  user!: User;
 
-  @ManyToOne(() => SubmissionRequest, (submissionRequest) => submissionRequest.submissions)
+  @ManyToOne(
+    () => SubmissionRequest,
+    (submissionRequest) => submissionRequest.submissions,
+  )
   @JoinColumn([{ name: "submission_request_id", referencedColumnName: "id" }])
-  submissionRequest!: SubmissionRequest
+  submissionRequest!: SubmissionRequest;
 
   @Column("timestamp", { name: "submitted_at" })
   submittedAt!: Date;

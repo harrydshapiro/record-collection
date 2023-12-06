@@ -1,7 +1,6 @@
 import {
   Column,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -56,7 +55,7 @@ export class SubmissionRequest extends AuditableEntity<SubmissionRequest> {
   playlist!: Playlist;
 
   @OneToMany(() => SubmittedTrack, (submittedTrack) => submittedTrack.track)
-  submissions!: SubmittedTrack[]
+  submissions!: SubmittedTrack[];
 }
 
 export type ISubmissionRequest = InstanceType<typeof SubmissionRequest>;

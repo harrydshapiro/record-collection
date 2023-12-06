@@ -1,9 +1,4 @@
-import {
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { SubmissionRequest } from "./SubmissionRequest";
 import { User } from "./User";
 import { AuditableEntity } from "./AuditableEntity";
@@ -21,7 +16,7 @@ export class Playlist extends AuditableEntity<Playlist> {
 
   @OneToMany(
     () => SubmissionRequest,
-    (submissionRequests) => submissionRequests.playlist
+    (submissionRequests) => submissionRequests.playlist,
   )
   submissionRequests!: SubmissionRequest[];
 

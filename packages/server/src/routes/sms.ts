@@ -7,8 +7,8 @@ import { internalApiKeyMiddleware } from "auth/internalApiKey.middleware";
 
 const smsRouter = Router();
 
-smsRouter.post('/incoming', handleIncomingMessage)
-smsRouter.post('/outgoing', internalApiKeyMiddleware, handleOutgoingMessage)
-smsRouter.get('/:phoneNumber', internalApiKeyMiddleware, fetchUserMessages)
+smsRouter.post("/incoming", handleIncomingMessage);
+smsRouter.post("/outgoing", internalApiKeyMiddleware, handleOutgoingMessage);
+smsRouter.get("/:phoneNumber", internalApiKeyMiddleware, fetchUserMessages);
 
-export default smsRouter
+export default smsRouter;

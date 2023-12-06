@@ -1,15 +1,15 @@
-import { NextFunction, Request, Response } from "express";
-import { messageRepository, queryUserMessages } from "orm/repositories/message.repository";
+import { Request, Response } from "express";
+import { queryUserMessages } from "orm/repositories/message.repository";
 
-export async function fetchUserMessages (req: Request, res: Response, next: NextFunction) {
-    const phoneNumber = req.params.phoneNumber;
+export async function fetchUserMessages(req: Request, res: Response) {
+  const phoneNumber = req.params.phoneNumber;
 
-    if (!phoneNumber) {
-        res.sendStatus(404)
-        return
-    }
+  if (!phoneNumber) {
+    res.sendStatus(404);
+    return;
+  }
 
-    const messages = await queryUserMessages(phoneNumber)
+  const messages = await queryUserMessages(phoneNumber);
 
-    return res.status(200).send({ messages })
+  return res.status(200).send({ messages });
 }

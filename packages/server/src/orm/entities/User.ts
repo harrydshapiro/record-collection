@@ -1,11 +1,10 @@
 import {
   Column,
   Entity,
-  Index,
   JoinColumn,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Message } from "./Message";
 import { Playlist } from "./Playlist";
@@ -49,7 +48,7 @@ export class User extends AuditableEntity<User> {
   personalPlaylist!: Playlist;
 
   @OneToMany(() => SubmittedTrack, (submittedTrack) => submittedTrack.track)
-  trackSubmissions!: SubmittedTrack[]
+  trackSubmissions!: SubmittedTrack[];
 }
 
 export type IUser = InstanceType<typeof User>;

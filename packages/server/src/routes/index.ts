@@ -4,7 +4,7 @@ import userRouter from "./user";
 
 const router = Router();
 
-router.use('/sms', smsRouter)
-router.use('/user', userRouter)
+router.use("/sms", smsRouter);
+router.use("/user", userRouter);
 
 export default router;

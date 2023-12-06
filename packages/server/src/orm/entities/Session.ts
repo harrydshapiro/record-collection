@@ -1,4 +1,4 @@
-import { Column, Entity, Index } from "typeorm";
+import { Column, Entity } from "typeorm";
 
 @Entity("session", { schema: "public" })
 export class Session {

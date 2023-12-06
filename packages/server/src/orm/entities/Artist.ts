@@ -1,4 +1,10 @@
-import { Column, Entity, Index, JoinTable, ManyToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Album } from "./Album";
 import { Genre } from "./Genre";
 import { Track } from "./Track";
@@ -16,7 +22,7 @@ export class Artist extends AuditableEntity<Artist> {
   followers?: number | null;
 
   @Column("jsonb", { name: "images", default: [] })
-  images!: { url: string, height: number, width: number }[];
+  images!: { url: string; height: number; width: number }[];
 
   @Column("character varying", { name: "name" })
   name!: string;
@@ -24,47 +30,47 @@ export class Artist extends AuditableEntity<Artist> {
   @Column("integer", { name: "popularity", nullable: true })
   popularity?: number | null;
 
-  @ManyToMany(type => Album)
+  @ManyToMany(() => Album)
   @JoinTable({
-      name: "albums_artists",
-      joinColumn: {
-        name: "artist_id",
-        referencedColumnName: "id"
-      },
-      inverseJoinColumn: {
-        name: "album_id",
-        referencedColumnName: "id"
-      }
+    name: "albums_artists",
+    joinColumn: {
+      name: "artist_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "album_id",
+      referencedColumnName: "id",
+    },
   })
-  albums!: Album[]
+  albums!: Album[];
 
-  @ManyToMany(type => Genre)
+  @ManyToMany(() => Genre)
   @JoinTable({
-      name: "artists_genres",
-      joinColumn: {
-        name: "artist_id",
-        referencedColumnName: "id"
-      },
-      inverseJoinColumn: {
-        name: "genre_id",
-        referencedColumnName: "id"
-      }
+    name: "artists_genres",
+    joinColumn: {
+      name: "artist_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "genre_id",
+      referencedColumnName: "id",
+    },
   })
-  genres!: Genre[]
+  genres!: Genre[];
 
-  @ManyToMany(type => Track)
+  @ManyToMany(() => Track)
   @JoinTable({
-      name: "artists_tracks",
-      joinColumn: {
-        name: "artist_id",
-        referencedColumnName: "id"
-      },
-      inverseJoinColumn: {
-        name: "track_id",
-        referencedColumnName: "id"
-      }
+    name: "artists_tracks",
+    joinColumn: {
+      name: "artist_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "track_id",
+      referencedColumnName: "id",
+    },
   })
-  tracks!: Track[]
+  tracks!: Track[];
 }
 
 export type IArtist = InstanceType<typeof Artist>;

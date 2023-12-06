@@ -1,7 +1,13 @@
-import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Track } from "./Track";
 import { Artist } from "./Artist";
-import { Genre } from "./Genre";
 import { AuditableEntity } from "./AuditableEntity";
 
 @Entity("albums", { schema: "public" })
@@ -13,7 +19,7 @@ export class Album extends AuditableEntity<Album> {
   name!: string;
 
   @Column("jsonb", { name: "images", default: [] })
-  images!: { url: string, height: number, width: number }[];
+  images!: { url: string; height: number; width: number }[];
 
   @Column("timestamp without time zone", {
     name: "release_date",
@@ -27,17 +33,17 @@ export class Album extends AuditableEntity<Album> {
   @Column("character varying", { name: "uri", unique: true })
   uri!: string;
 
-  @ManyToMany(type => Artist)
+  @ManyToMany(() => Artist)
   @JoinTable({
-      name: "albums_artists",
-      joinColumn: {
-        name: "album_id",
-        referencedColumnName: "id"
-      },
-      inverseJoinColumn: {
-        name: "artist_id",
-        referencedColumnName: "id"
-      }
+    name: "albums_artists",
+    joinColumn: {
+      name: "album_id",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "artist_id",
+      referencedColumnName: "id",
+    },
   })
   artists!: Artist[];
 

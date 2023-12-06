@@ -1,7 +1,6 @@
 import {
   Column,
   Entity,
-  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -25,7 +24,7 @@ export class Message {
 
   @ManyToOne(
     () => SubmissionRequest,
-    (submissionRequests) => submissionRequests.messages
+    (submissionRequests) => submissionRequests.messages,
   )
   @JoinColumn([{ name: "submission_request_id", referencedColumnName: "id" }])
   submissionRequest!: SubmissionRequest;

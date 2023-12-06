@@ -1,25 +1,27 @@
-import { AppDataSource } from 'orm/DataSource';
-import { Track } from 'orm/entities/Track';
+import { AppDataSource } from "orm/DataSource";
+import { Track } from "orm/entities/Track";
 
 const trackRepository = AppDataSource.getRepository(Track);
 
 export function getFullTrackContext(trackUri: string) {
   return trackRepository.findOne({
     where: {
-      uri: trackUri
+      uri: trackUri,
     },
     relations: {
       artists: {
-        genres: true
-      }
-    }
-  })
+        genres: true,
+      },
+    },
+  });
 }
 
 export async function upsertTrack(track: Track) {
-  const existingTrack = await trackRepository.findOne({ where: { uri: track.uri }})
+  const existingTrack = await trackRepository.findOne({
+    where: { uri: track.uri },
+  });
   if (existingTrack) {
-    return existingTrack
+    return existingTrack;
   }
-  return trackRepository.save(track)
+  return trackRepository.save(track);
 }
