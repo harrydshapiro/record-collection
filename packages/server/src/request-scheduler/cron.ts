@@ -22,7 +22,7 @@ async function executeSubmissionRequest() {
   }
   await turnOnSubmissionRequest(requestToSend);
   const users = await userRepository.find({
-    where: { phoneNumber: "+19176475261" },
+    where: { active: true },
   });
   const requestText = requestToSend.requestText;
 
