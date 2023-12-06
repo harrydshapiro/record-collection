@@ -1,4 +1,5 @@
 import { AppDataSource } from "orm/DataSource";
+import { SubmissionRequest } from "orm/entities/SubmissionRequest";
 import { SubmittedTrack } from "orm/entities/SubmittedTrack";
 
 const submittedTrackRepository = AppDataSource.getRepository(SubmittedTrack);
@@ -20,4 +21,16 @@ export function addSubmittedTrack({
     VALUES ('${trackId}','${userId}','${submissionRequestId}',${popularityAtSubmissionTime})
     ON CONFLICT DO NOTHING
   `);
+}
+
+export function getSubmittedTracksForSubmissionRequest(
+  submissionRequestId: number,
+) {
+  return submittedTrackRepository.find({
+    where: {
+      submissionRequest: {
+        id: submissionRequestId,
+      },
+    },
+  });
 }

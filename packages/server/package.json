@@ -10,7 +10,8 @@
         "start": "NODE_PATH=./dist node ./dist/index.js",
         "tsc": "tsc --noEmit",
         "db:diagram": "typeorm-uml ormconfig.json",
-        "lint": "eslint . --ext .ts --fix"
+        "lint": "eslint . --ext .ts --fix",
+        "simulate-prod-start": "NODE_ENV=production NODE_PATH=./dist node ./dist/index.js"
     },
     "dependencies": {
         "@spotify/web-api-ts-sdk": "^1.1.2",
@@ -60,10 +61,10 @@
         "chai": "^4.3.6",
         "commitizen": "^4.2.4",
         "dotenv": "^16.3.1",
-        "eslint-plugin-import": "^2.26.0",
-        "eslint-plugin-no-array-reduce": "^1.0.58",
         "eslint": "^8.55.0",
         "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-no-array-reduce": "^1.0.58",
         "eslint-plugin-prettier": "^5.0.1",
         "husky": "^8.0.1",
         "jsdom": "^22.1.0",

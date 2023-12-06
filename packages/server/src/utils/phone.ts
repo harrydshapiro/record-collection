@@ -18,11 +18,6 @@ export function sendMessageToPhoneNumber(
   phoneNumber: string,
   mediaUrl?: string,
 ) {
-  console.log("Scheduling message to phone number", Date.now(), {
-    body,
-    phoneNumber,
-    mediaUrl,
-  });
   return smsLimiter.schedule(async () => {
     console.log("About to send message to phone number", {
       body,

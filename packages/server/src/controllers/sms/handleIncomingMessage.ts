@@ -11,7 +11,10 @@ import {
   getPlaylistShareLink,
   persistTrackDataAndRelationsToDb,
 } from "utils/spotify";
-import { addSubmittedTrack } from "orm/repositories/submittedTrack.repository";
+import {
+  addSubmittedTrack,
+  getSubmittedTracksForSubmissionRequest,
+} from "orm/repositories/submittedTrack.repository";
 
 const MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST = 3;
 
@@ -93,7 +96,6 @@ export default async function handleIncomingMessage(
 
     await persistTrackDataAndRelationsToDb(songUri)
       .then(async ({ track, trackPopularity }) => {
-        // TODO - I HAVENT ACTUALLY TESTED THAT THIS LINE WORKS...
         return addSubmittedTrack({
           trackId: track.id,
           submissionRequestId: currentSubmissionRequest.id,
@@ -108,9 +110,9 @@ export default async function handleIncomingMessage(
         console.error(err);
       });
 
-    const messagesSoFar = await messageRepository.find({
-      where: { submissionRequest: { id: currentSubmissionRequest.id } },
-    });
+    const submittedTracksSoFar = await getSubmittedTracksForSubmissionRequest(
+      currentSubmissionRequest.id,
+    );
     const dailyPlaylistShareMessage = `${
       currentSubmissionRequest.submissionResponse
     }\n\nYou can find today's playlist here: ${getPlaylistShareLink(
@@ -121,13 +123,17 @@ export default async function handleIncomingMessage(
       ZEITGEIST_URI,
     )}`;
     const responseText = dailyPlaylistUri
-      ? messagesSoFar.length >= MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST
+      ? submittedTracksSoFar.length >=
+        MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST
         ? dailyPlaylistShareMessage
         : dailyPlaylistWaitMessage
       : zeitgeistShareMessage;
     twimlResponse.message(responseText);
-    if (messagesSoFar.length === MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST) {
-      const allPreviousSubmitors = messagesSoFar.reduce(
+    if (
+      submittedTracksSoFar.length ===
+      MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST
+    ) {
+      const allPreviousSubmitors = submittedTracksSoFar.reduce(
         (acc: string[], curr) => {
           if (
             curr.user.phoneNumber !== senderPhoneNumber &&
