@@ -13,7 +13,7 @@ import {
 } from "utils/spotify";
 import { addSubmittedTrack } from "orm/repositories/submittedTrack.repository";
 
-const MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST = 3;
+const MINIMUM_SUBMISSIONS_BEFORE_SENDING_PLAYLIST = 5;
 
 export default async function handleIncomingMessage(
   req: Request,
