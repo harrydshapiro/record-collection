@@ -27,7 +27,7 @@ async function executeSubmissionRequest() {
   const requestText = requestToSend.requestText;
 
   users.forEach((user) => {
-    const body = `${user.firstName} !!! it's time :)\n\n${requestText}`;
+    const body = `${user.firstName} !!!\n\n${requestText}`;
     void sendMessageToPhoneNumber(body, user.phoneNumber);
   });
 }
