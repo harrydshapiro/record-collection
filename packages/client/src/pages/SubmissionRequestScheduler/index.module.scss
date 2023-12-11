@@ -1,0 +1,13 @@
+#page {
+    display: flex;
+    padding: 20px;
+    box-sizing: border-box;
+    font-size: 1.2rem;
+
+    #existingRequests {
+        flex: 1;
+    }
+    #createUpdateForm {
+        flex: 1;
+    }
+}

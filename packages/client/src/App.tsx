@@ -4,9 +4,9 @@ import { Provider } from 'react-redux'
 
 import './App.css';
 import { Signup } from './pages/Signup/Signup';
-import { Admin } from './pages/Admin';
+import { AdminMessages } from './pages/AdminMessages';
 import { reduxStore } from './store';
-import { Signin } from './pages/Signin/Signin';
+import { SubmissionRequestScheduler } from './pages/SubmissionRequestScheduler';
 
 function App() {
   return (
@@ -14,9 +14,9 @@ function App() {
       <Provider store={reduxStore}>
         <BrowserRouter>
           <Routes>
-            {/* <Route path='/' element={<Signin/>}/> */}
             <Route path='/signup' element={<Signup/>}/>
-            <Route path='/admin' element={<Admin/>}/>
+            <Route path='/admin/messages' element={<AdminMessages/>}/>
+            <Route path='/admin/submission-requests' element={<SubmissionRequestScheduler/>}/>
             <Route path="*" element={<Navigate to="/signup"/>}/>
           </Routes>
         </BrowserRouter>

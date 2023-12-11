@@ -10,7 +10,7 @@ import { selectHasAdminAuth } from '../../store/userReducer'
 
 import styles from './index.module.scss'
 
-export function Admin (): JSX.Element {
+export function AdminMessages (): JSX.Element {
     const hasAdminAuth = useSelector(selectHasAdminAuth)
 
     const [users, setUsers] = useState<IUser[]>([])
