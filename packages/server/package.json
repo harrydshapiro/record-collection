@@ -31,6 +31,7 @@
         "libphonenumber-js": "^1.10.51",
         "lodash": "^4.17.21",
         "morgan": "^1.10.0",
+        "newrelic": "^11.6.1",
         "pg": "^8.7.3",
         "pluralize": "^8.0.0",
         "reflect-metadata": "^0.1.13",

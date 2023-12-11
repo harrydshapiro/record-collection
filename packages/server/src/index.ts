@@ -1,5 +1,6 @@
 import "dotenv/config";
 import "reflect-metadata";
+import "newrelic";
 import bodyParser from "body-parser";
 import express, { ErrorRequestHandler } from "express";
 import morgan from "morgan";
@@ -13,6 +14,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import expressSession from "express-session";
 import postgresSession from "connect-pg-simple";
+import { stayAwake } from "utils/stayAwake";
 
 export const app = express();
 
@@ -69,4 +71,6 @@ void (async () => {
   if (process.env.NODE_ENV === "production") {
     startCron();
   }
+
+  stayAwake();
 })();

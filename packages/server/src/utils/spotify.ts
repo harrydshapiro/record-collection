@@ -162,22 +162,3 @@ export function mapSpotifyArtistToSongHausArtist(
     genres: genres as Genre[],
   });
 }
-
-// export async function backfillDB () {
-//     const messages = await messageRepository.find({ where: { body: Like('%track%') }, relations: ['user', 'submissionRequest'] })
-//     for (let i = 0; i < messages.length; i++) {
-//         const message = messages[i]
-//         const trackId = new URL(message.body).pathname.split('/').pop()
-//         if (trackId) {
-//             const matchingTrack = await getFullTrackContext(`spotify:track:${trackId}`)
-//             try {
-//                 if (matchingTrack) {
-//                     await addSubmittedTrack({ trackId: matchingTrack.id, userId: message.user?.id, submissionRequestId: message.submissionRequest.id, popularityAtSubmissionTime: 101 })
-//                     console.log(i, 'Submitted track:', trackId, 'Message:', message.id)
-//                 }
-//             } catch (err) {
-//                 console.error(trackId, err)
-//             }
-//         }
-//     }
-// }

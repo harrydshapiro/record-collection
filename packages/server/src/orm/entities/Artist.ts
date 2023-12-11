@@ -19,7 +19,7 @@ export class Artist extends AuditableEntity<Artist> {
   uri!: string;
 
   @Column("integer", { name: "followers", nullable: true })
-  followers?: number | null;
+  followers?: number ;
 
   @Column("jsonb", { name: "images", default: [] })
   images!: { url: string; height: number; width: number }[];
@@ -28,7 +28,7 @@ export class Artist extends AuditableEntity<Artist> {
   name!: string;
 
   @Column("integer", { name: "popularity", nullable: true })
-  popularity?: number | null;
+  popularity?: number ;
 
   @ManyToMany(() => Album)
   @JoinTable({

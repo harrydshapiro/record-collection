@@ -23,20 +23,19 @@ export class SubmissionRequest extends AuditableEntity<SubmissionRequest> {
     name: "requested_at",
     nullable: true,
   })
-  requestedAt?: Date | null;
+  requestedAt?: Date;
 
   @Column("timestamp without time zone", {
     name: "scheduled_for",
     nullable: true,
   })
-  scheduledFor?: Date | null;
+  scheduledFor?: Date;
 
   @Column("character varying", {
     name: "submission_response",
-    nullable: true,
     default: () => "''",
   })
-  submissionResponse?: string | null;
+  submissionResponse!: string;
 
   @Column("boolean", { name: "is_active", default: () => "false" })
   isActive!: boolean;
@@ -45,7 +44,7 @@ export class SubmissionRequest extends AuditableEntity<SubmissionRequest> {
   type!: string;
 
   @Column("character varying", { name: "media_url", nullable: true })
-  mediaUrl?: string | null;
+  mediaUrl?: string;
 
   @OneToMany(() => Message, (messages) => messages.submissionRequest)
   messages!: Message[];

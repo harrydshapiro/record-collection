@@ -25,10 +25,10 @@ export class Track extends AuditableEntity<Track> {
   name!: string;
 
   @Column("integer", { name: "duration_ms" })
-  durationMs?: number | null;
+  durationMs?: number ;
 
   @Column("integer", { name: "track_number" })
-  trackNumber?: number | null;
+  trackNumber?: number ;
 
   @ManyToMany(() => Artist)
   @JoinTable({

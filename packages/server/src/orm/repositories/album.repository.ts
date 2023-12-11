@@ -1,5 +1,6 @@
 import { AppDataSource } from "orm/DataSource";
 import { Album } from "orm/entities/Album";
+import { getFullTrackContext } from "./track.repository";
 
 const albumRepository = AppDataSource.getRepository(Album);
 
@@ -18,4 +19,9 @@ export async function upsertAlbum(album: Album) {
     return existingAlbum;
   }
   return albumRepository.save(album);
+}
+
+export async function getAlbumForTrack(trackId: string) {
+  const trackContext = await getFullTrackContext(trackId);
+  return trackContext?.album;
 }

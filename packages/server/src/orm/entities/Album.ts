@@ -25,10 +25,10 @@ export class Album extends AuditableEntity<Album> {
     name: "release_date",
     nullable: true,
   })
-  releaseDate?: Date | null;
+  releaseDate?: Date ;
 
   @Column("integer", { name: "popularity", nullable: true })
-  popularity?: number | null;
+  popularity?: number ;
 
   @Column("character varying", { name: "uri", unique: true })
   uri!: string;

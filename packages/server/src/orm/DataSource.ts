@@ -11,7 +11,7 @@ export const AppDataSource = new DataSource({
   name: "default",
   url: process.env.DATABASE_URL,
   synchronize: false,
-  logging: false,
+  logging: true,
   entities: [entitiesDir],
   migrations: ["src/orm/migrations/**/*.ts"],
   subscribers: ["src/orm/subscriber/**/*.ts"],

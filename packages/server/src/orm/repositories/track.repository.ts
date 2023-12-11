@@ -12,6 +12,7 @@ export function getFullTrackContext(trackUri: string) {
       artists: {
         genres: true,
       },
+      album: true,
     },
   });
 }

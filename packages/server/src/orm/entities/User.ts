@@ -38,7 +38,7 @@ export class User extends AuditableEntity<User> {
   createdAt!: Date;
 
   @Column("character varying", { name: "reference", nullable: true })
-  reference?: string | null;
+  reference?: string ;
 
   @OneToMany(() => Message, (messages) => messages.user)
   messages!: Message[];
