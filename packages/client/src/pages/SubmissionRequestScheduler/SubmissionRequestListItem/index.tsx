@@ -3,7 +3,7 @@ import styles from "./index.module.scss"
 import clsx from 'clsx'
 import { ISubmissionRequest } from '@songhaus/server'
 
-export function SubmissionRequestListItem ({ submissionRequest, onEditClick } : { submissionRequest: ISubmissionRequest, onEditClick: React.Dispatch<React.SetStateAction<number | undefined>>
+export function SubmissionRequestListItem ({ submissionRequest, onEditClick } : { submissionRequest: ISubmissionRequest, onEditClick: (subRequest: ISubmissionRequest) => void
 }) {
     if (!submissionRequest) {
         debugger
@@ -17,7 +17,7 @@ export function SubmissionRequestListItem ({ submissionRequest, onEditClick } : 
     }, [submissionRequest.scheduledFor])
 
     return <div className={clsx({ [styles.submissionRequestItem]: true, [styles.isPast]: isPast })}>
-        { !isPast && <span className={styles.editButton} onClick={() => onEditClick(submissionRequest.id)}>EDIT</span> }
+        { !isPast && <span className={styles.editButton} onClick={() => onEditClick(submissionRequest)}>EDIT</span> }
         <table>
             <tr>
                 <th>PLAYLIST NAME</th>

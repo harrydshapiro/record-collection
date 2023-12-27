@@ -3,10 +3,10 @@ import { useState, useEffect } from "react"
 import { fetchAllPlaylists, fetchSubmissionRequest } from "../../api/client"
 import styles from "./index.module.scss"
 import moment from "moment"
+import { SubmissionRequestForEditing } from "../../pages/SubmissionRequestScheduler"
 
-export function SubmissionRequestForm ({ requestId, onSubmit }: {requestId?: number, onSubmit: Function}) {
+export function SubmissionRequestForm ({ initialValues, onSubmit }: { initialValues: SubmissionRequestForEditing, onSubmit: Function}) {
     const [playlists, setPlaylists] = useState<IPlaylist[]>([]) 
-    const [existingSubmissionRequest, setExistingSubmissionRequest] = useState<undefined | ISubmissionRequest>() 
 
     const [requestText, setRequestText] = useState('')
     const [responseText, setResponseText] = useState('')
@@ -15,22 +15,12 @@ export function SubmissionRequestForm ({ requestId, onSubmit }: {requestId?: num
     const [playlistId, setPlaylistId] = useState<number | undefined>()
 
     useEffect(() => {
-        if (requestId) {
-            fetchSubmissionRequest(requestId).then(setExistingSubmissionRequest)
-        } else {
-            setExistingSubmissionRequest(undefined)
-        }
-    }, [requestId])
-
-    useEffect(() => {
-        if (existingSubmissionRequest) {
-            setRequestText(existingSubmissionRequest.requestText)
-            setResponseText(existingSubmissionRequest.submissionResponse)
-            setScheduledFor(existingSubmissionRequest.scheduledFor)
-            setMediaUrl(existingSubmissionRequest.mediaUrl || "")
-            setPlaylistId(existingSubmissionRequest.playlist.id)
-        }
-    }, [existingSubmissionRequest])
+        setRequestText(initialValues.requestText)
+        setResponseText(initialValues.submissionResponse)
+        setScheduledFor(initialValues.scheduledFor)
+        setMediaUrl(initialValues.mediaUrl || "")
+        setPlaylistId(initialValues.playlistId)
+    }, [initialValues])
 
     useEffect(() => {
         fetchAllPlaylists().then(setPlaylists)
@@ -53,7 +43,7 @@ export function SubmissionRequestForm ({ requestId, onSubmit }: {requestId?: num
             </div>
 
             <div className={styles.formItem}>
-                {/* TODO - Confirm no issues here with TIMEZONE!!! */}
+                {/* TODO - Confirm no issues here with TIMEZONE!!! - I think this currently doesn't work quite right */}
                 <label htmlFor="scheduled-for">Scheduled for</label>
                 <input type="datetime-local" name="scheduled-for" value={scheduledFor ? moment(scheduledFor).format('yyyy-MM-DDThh:mm') : ""} onInput={(e: React.FormEvent<HTMLInputElement>) => {
                     setScheduledFor(new Date(e.currentTarget.value))
