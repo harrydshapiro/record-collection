@@ -43,10 +43,12 @@ podcastRouter.use("*", (req, res) => {
   <itunes:block>Yes</itunes:block>
   <guid isPermaLink="false">ff1cf746-d829-460d-bdc2-53f16ec09d79</guid>
   <description>
-  <![CDATA[ <p>After Spotify wrapped up song.hausmates' top songs in 2023, it was time to unwrap the stories behind them. </p><p>We found our songs through friends and algorithms. They conjured emotions we yearned for and reflected those we were saddled with. The artists represented range from Mazzy Star to Fred Again, their popularity from "I'm not sure how I even found them" to "I literally cannot escape them," and their Blake Shelton-ness from "they are not Blake Shelton" to "they are Blake Shelton."</p><p>On a serious note... it was a joy to listen to all you gush about what you love in your music. Thank you so much to all who submitted. We hope y'all enjoy!</p><p>- the song.haus team (aka Harry &amp; Sarah)</p> ]]>
+  <![CDATA[ <p>After Spotify wrapped up yall's top songs in 2023, we thought it was time to unwrap the stories behind them.</p>
+<p>We asked song haus members to submit a voice memo about their top songs this year. Huge thanks to all who did. We loved hearing about what 9/11 did to country music, a Fred Again meet-cute, and all the emotional baggage that saddled you last year. Nothing beats some backstory but your music taste. In this episode, we got both.</p> ]]>
   </description>
   <content:encoded>
-  <![CDATA[ <p>After Spotify wrapped up song.hausmates' top songs in 2023, it was time to unwrap the stories behind them. </p><p>We found our songs through friends and algorithms. They conjured emotions we yearned for and reflected those we were saddled with. The artists represented range from Mazzy Star to Fred Again, their popularity from "I'm not sure how I even found them" to "I literally cannot escape them," and their Blake Shelton-ness from "they are not Blake Shelton" to "they are Blake Shelton."</p><p>On a serious note... it was a joy to listen to all you gush about what you love in your music. Thank you so much to all who submitted. We hope y'all enjoy!</p><p>- the song.haus team (aka Harry &amp; Sarah)</p> ]]>
+  <![CDATA[ <p>After Spotify wrapped up yall's top songs in 2023, we thought it was time to unwrap the stories behind them.</p>
+<p>We asked song haus members to submit a voice memo about their top songs this year. Huge thanks to all who did. We loved hearing about what 9/11 did to country music, a Fred Again meet-cute, and all the emotional baggage that saddled you last year. Nothing beats some backstory but your music taste. In this episode, we got both.</p> ]]>
   </content:encoded>
   <pubDate>Wed, 27 Dec 2023 09:38:38 -0500</pubDate>
   <author>song.haus</author>
@@ -54,7 +56,8 @@ podcastRouter.use("*", (req, res) => {
   <itunes:author>song.haus</itunes:author>
   <itunes:duration>1009</itunes:duration>
   <itunes:summary>
-  <![CDATA[ <p>After Spotify wrapped up song.hausmates' top songs in 2023, it was time to unwrap the stories behind them. </p><p>We found our songs through friends and algorithms. They conjured emotions we yearned for and reflected those we were saddled with. The artists represented range from Mazzy Star to Fred Again, their popularity from "I'm not sure how I even found them" to "I literally cannot escape them," and their Blake Shelton-ness from "they are not Blake Shelton" to "they are Blake Shelton."</p><p>On a serious note... it was a joy to listen to all you gush about what you love in your music. Thank you so much to all who submitted. We hope y'all enjoy!</p><p>- the song.haus team (aka Harry &amp; Sarah)</p> ]]>
+  <![CDATA[ <p>After Spotify wrapped up yall's top songs in 2023, we thought it was time to unwrap the stories behind them.</p>
+<p>We asked song haus members to submit a voice memo about their top songs this year. Huge thanks to all who did. We loved hearing about what 9/11 did to country music, a Fred Again meet-cute, and all the emotional baggage that saddled you last year. Nothing beats some backstory but your music taste. In this episode, we got both.</p> ]]>
   </itunes:summary>
   <itunes:keywords/>
   <itunes:explicit>No</itunes:explicit>
