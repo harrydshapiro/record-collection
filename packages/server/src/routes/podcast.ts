@@ -2,7 +2,44 @@ import { Router } from "express";
 
 export const podcastRouter = Router();
 
-podcastRouter.use("*", (req, res) => {
+podcastRouter.get("/subscribe", (req, res) => {
+  res.set("Content-Type", "text/html");
+  res.send(`
+    <html>
+      <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <style>
+          body {
+            font-family: Helvetica, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 95vw;
+            max-width: 600px; 
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+            font-size: 24px;
+            text-align: center;
+          }
+
+          p {
+            margin: 0;
+          }
+        </style>
+      </head>
+      <body>
+        <a href="podcast://songhaus-e47256d4e2e7.herokuapp.com/podcast/feed">subscribe on apple pods</a>
+        <br/>
+        <p>if you want to listen on some other android app, text us!</p>
+        <br/>
+        <p>if you listen to pods on spotify, sorry, they don't let you do private podcasts so we're not on there 😡</p>        
+      </body>
+    </html>
+  `);
+});
+
+podcastRouter.use("/feed", (req, res) => {
   res.set("Content-Type", "application/rss+xml");
   res.send(`<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:podcast="https://podcastindex.org/namespace/1.0" version="2.0">
   <channel>
