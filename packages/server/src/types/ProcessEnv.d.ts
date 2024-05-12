@@ -5,9 +5,8 @@ declare namespace NodeJS {
     DATABASE_URL: string;
     SPOTIFY_CLIENT_ID: string;
     SPOTIFY_CLIENT_SECRET: string;
-    TWILIO_ACCOUNT_SID: string;
-    TWILIO_AUTH_TOKEN: string;
     FROM_NUMBER: string;
     HOST: string;
+    MPD_PORT: string;
   }
 }

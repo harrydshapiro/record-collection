@@ -1,14 +1,10 @@
 import { Router } from "express";
-import smsRouter from "./sms";
-import userRouter from "./user";
-import submissionRequestsRouter from "./submission-requests";
-import { podcastRouter } from "./podcast";
+import { playerRouter } from "./player";
+import { libraryRouter } from "./library";
 
 const router = Router();
 
-router.use("/podcast", podcastRouter);
-router.use("/sms", smsRouter);
-router.use("/user", userRouter);
-router.use("/submission-request", submissionRequestsRouter);
+router.use('/player', playerRouter)
+router.use('/library', libraryRouter)
 
 export default router;

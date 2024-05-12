@@ -1,20 +1,14 @@
 import "dotenv/config";
 import "reflect-metadata";
-import "newrelic";
 import bodyParser from "body-parser";
 import express, { ErrorRequestHandler } from "express";
 import morgan from "morgan";
 import path from "path";
 import "express-async-errors";
 
-import { dbCreateConnection } from "orm/DataSource";
-import { startCron } from "request-scheduler/cron";
 import routes from "routes/index";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import expressSession from "express-session";
-import postgresSession from "connect-pg-simple";
-import { stayAwake } from "utils/stayAwake";
 
 export const app = express();
 
@@ -45,32 +39,3 @@ const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
-void (async () => {
-  await dbCreateConnection();
-
-  const pgSessionStore = postgresSession(expressSession);
-  app.use(
-    expressSession({
-      store: new pgSessionStore({
-        createTableIfMissing: true,
-        conObject: {
-          connectionString: process.env.DATABASE_URL,
-          ssl: { rejectUnauthorized: false },
-        },
-      }),
-      secret: process.env.COOKIE_SECRET!,
-      resave: false,
-      cookie: { maxAge: 24 * 60 * 60 * 1000 },
-      rolling: true,
-      saveUninitialized: true,
-      // Insert express-session options here
-    }),
-  );
-
-  if (process.env.NODE_ENV === "production") {
-    startCron();
-  }
-
-  stayAwake();
-})();

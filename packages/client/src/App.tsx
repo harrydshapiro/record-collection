@@ -14,10 +14,7 @@ function App() {
       <Provider store={reduxStore}>
         <BrowserRouter>
           <Routes>
-            <Route path='/signup' element={<Signup/>}/>
-            <Route path='/admin/messages' element={<AdminMessages/>}/>
-            <Route path='/admin/submission-requests' element={<SubmissionRequestScheduler/>}/>
-            <Route path="*" element={<Navigate to="/signup"/>}/>
+            {/* <Route path="*" element={<Navigate to="/signup"/>}/> */}
           </Routes>
         </BrowserRouter>
       </Provider>

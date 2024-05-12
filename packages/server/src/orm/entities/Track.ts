@@ -5,13 +5,11 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Album } from "./Album";
 import { Artist } from "./Artist";
 import { AuditableEntity } from "./AuditableEntity";
-import { SubmittedTrack } from "./SubmittedTrack";
 
 @Entity("tracks", { schema: "public" })
 export class Track extends AuditableEntity<Track> {
@@ -25,10 +23,10 @@ export class Track extends AuditableEntity<Track> {
   name!: string;
 
   @Column("integer", { name: "duration_ms" })
-  durationMs?: number ;
+  durationMs?: number;
 
   @Column("integer", { name: "track_number" })
-  trackNumber?: number ;
+  trackNumber?: number;
 
   @ManyToMany(() => Artist)
   @JoinTable({
@@ -47,9 +45,6 @@ export class Track extends AuditableEntity<Track> {
   @ManyToOne(() => Album, (albums) => albums.tracks)
   @JoinColumn([{ name: "album_id", referencedColumnName: "id" }])
   album!: Album;
-
-  @OneToMany(() => SubmittedTrack, (submittedTrack) => submittedTrack.track)
-  submissions!: SubmittedTrack[];
 
   @Column("numeric")
   acousticness!: number;

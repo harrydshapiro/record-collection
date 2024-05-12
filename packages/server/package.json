@@ -4,7 +4,7 @@
     "private": true,
     "main": "src/export.ts",
     "scripts": {
-        "dev": "debug=* NODE_PATH=./src ts-node-dev --respawn ./src/index.ts",
+        "dev": "debug=* NODE_PATH=./src ts-node-dev --respawn --inspect=4321 ./src/index.ts",
         "build": "rimraf dist && tsc",
         "heroku-postinstall": "npm run build",
         "start": "NODE_PATH=./dist node ./dist/index.js",
