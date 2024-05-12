@@ -8,5 +8,6 @@ declare namespace NodeJS {
     FROM_NUMBER: string;
     HOST: string;
     MPD_PORT: string;
+    LIBRARY_CACHE_PATH: string;
   }
 }

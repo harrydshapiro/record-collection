@@ -1,4 +1,4 @@
-import { MPC } from "mpc-js";
+import { MPC, Song } from "mpc-js";
 
 class _MpcService {
   mpc!: MPC;
@@ -52,9 +52,22 @@ class _MpcService {
   }
   
   async getAlbums () {
-    const result = await this.mpc.database.find()
-    console.log('keys are', Array.from(result.values()))
-    return Object.fromEntries(result)
+    const [uniqueAlbumNames] = Array.from((await this.mpc.database.list('album')).values())
+    const processedAlbums: Record<string, { albumName: string, albumArtist: string, tracks: Song[]}> = {}
+    for (const albumName of uniqueAlbumNames) {
+      const filter = `(album == "${albumName}")`
+      const tracks = await this.mpc.database.find(filter)
+      const prettyAlbumName = albumName || "Unknown Album";
+      for (const track of tracks) {
+        const prettyArtistName = track.albumArtist || track.artist || "Unknown Artist"
+        const albumEntryKey = `${prettyArtistName}_${prettyAlbumName}`
+        if (!processedAlbums[albumEntryKey]) {
+          processedAlbums[albumEntryKey] = { albumName: prettyAlbumName, albumArtist: prettyArtistName, tracks: [] }
+        }
+        processedAlbums[albumEntryKey].tracks.push(track)
+      }
+    }
+    return processedAlbums
   }
 }
 
