@@ -1,12 +1,10 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux'
 
 import './App.css';
-import { Signup } from './pages/Signup/Signup';
-import { AdminMessages } from './pages/AdminMessages';
 import { reduxStore } from './store';
-import { SubmissionRequestScheduler } from './pages/SubmissionRequestScheduler';
+import { HomePage } from './pages/Home/Home';
+import { SettingsPage } from './pages/Settings/Settings';
 
 function App() {
   return (
@@ -14,7 +12,9 @@ function App() {
       <Provider store={reduxStore}>
         <BrowserRouter>
           <Routes>
-            {/* <Route path="*" element={<Navigate to="/signup"/>}/> */}
+            <Route path="/library/albums" element={<HomePage/>}/>
+            <Route path="/settings" element={<SettingsPage/>}/>
+            <Route path="*" element={<Navigate to="/library/albums"/>}/>
           </Routes>
         </BrowserRouter>
       </Provider>

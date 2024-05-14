@@ -2,14 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 
-import userReducer from "./userReducer";
+import libraryReducer from "./libraryReducer";
 
 export type RootReducerShape = {
-  user: ReturnType<typeof userReducer>;
+  library: ReturnType<typeof libraryReducer>;
 };
 
 export const reduxStore = configureStore({
-  reducer: { user: userReducer },
+  reducer: { library: libraryReducer },
   devTools: true,
 });
 
