@@ -4,7 +4,7 @@ import { libraryRouter } from "./library";
 
 const router = Router();
 
-router.use('/player', playerRouter)
-router.use('/library', libraryRouter)
+router.use("/player", playerRouter);
+router.use("/library", libraryRouter);
 
 export default router;

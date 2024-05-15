@@ -1,3 +1,4 @@
-// import { IPlaylist } from "./orm/entities/Playlist";
+import { Song } from "mpc-js";
+import { GetAlbumsReturnType } from "./services/mpc.service";
 
-// export { IPlaylist };
+export { Song, GetAlbumsReturnType };
