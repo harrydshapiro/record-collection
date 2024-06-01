@@ -24,7 +24,7 @@ class _MpcService {
 
   private async initMpc(port: number) {
     this.mpc = new MPC();
-    await this.mpc.connectTCP("localhost", port);
+    await this.mpc.connectTCP("0.0.0.0", port);
   }
 
   play() {

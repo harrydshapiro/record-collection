@@ -15,5 +15,5 @@ playerRouter.post("/next", handleNext);
 playerRouter.post("/previous", handlePrevious);
 
 playerRouter.get("/queue", handleGetQueue);
-playerRouter.post('/queue/track', handleAddTrackToQueue);
-playerRouter.post('/queue/album', handleAddAlbumToQueue);
+playerRouter.post("/queue/track", handleAddTrackToQueue);
+playerRouter.post("/queue/album", handleAddAlbumToQueue);

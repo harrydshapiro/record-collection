@@ -8,4 +8,4 @@ export const handleNext: RequestHandler = async (req, res) => {
   } catch (err) {
     return res.status(500).send(err);
   }
-}
+};

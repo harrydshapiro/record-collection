@@ -1,11 +1,11 @@
 import { RequestHandler } from "express";
-import { libraryCache } from "../../services/library-cache.service";
+import { MpcService } from "src/services/mpc.service";
 
 export const handleGetAlbums: RequestHandler = async (req, res) => {
   try {
-    const { albums } = await libraryCache.getCache()
-    return res.json(albums)
+    const albums = await MpcService.getAlbums();
+    return res.json(albums);
   } catch (err) {
-    return res.json(err).sendStatus(500)
+    return res.json(err).sendStatus(500);
   }
-}
+};
