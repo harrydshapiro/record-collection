@@ -1,11 +1,17 @@
-import { RequestHandler } from "express";
-import { MpcService } from "src/services/mpc.service";
+import { MpcService } from "../../services/mpc.service";
+import { useError } from "utils/useError";
+import { API } from "routes/api-contract";
 
-export const handleGetAlbums: RequestHandler = async (req, res) => {
+export const handleGetAlbums: API["library"]["albums"]["GET"] = async (
+  req,
+  res,
+) => {
   try {
     const albums = await MpcService.getAlbums();
     return res.json(albums);
   } catch (err) {
-    return res.json(err).sendStatus(500);
+    console.error(err);
+    const useErr = useError(err, "Error fetching albums");
+    return res.status(500).send(useErr);
   }
 };

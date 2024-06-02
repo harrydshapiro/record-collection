@@ -1,13 +1,10 @@
 import { MPC, Song } from "mpc-js";
 
-export type GetAlbumsReturnType = Record<
-  string,
-  {
-    albumName: string;
-    albumArtist: string;
-    tracks: Song[];
-  }
->;
+export type GetAlbumsReturnType = Array<{
+  albumName: string;
+  albumArtist: string;
+  tracks: Song[];
+}>;
 
 class _MpcService {
   mpc!: MPC;
@@ -89,7 +86,7 @@ class _MpcService {
         processedAlbums[albumEntryKey].tracks.push(fullTrack);
       }
     }
-    return processedAlbums;
+    return Object.values(processedAlbums);
   }
 
   update() {
