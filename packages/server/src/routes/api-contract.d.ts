@@ -19,7 +19,12 @@ export type API = {
   };
   library: {
     albums: {
-      GET: RequestHandler<unknown, GetAlbumsReturnType, unknown, unknown>;
+      GET: RequestHandler<
+        unknown,
+        GetAlbumsReturnType | Error,
+        unknown,
+        unknown
+      >;
     };
   };
 };

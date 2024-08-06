@@ -1,13 +1,13 @@
 {
     "private": true,
-    "name": "songhaus",
+    "name": "record-collection",
     "workspaces": [
         "packages/**"
     ],
     "scripts": {
         "heroku-postinstall": "yarn build",
-        "build": "yarn workspace @songhaus/client build && yarn workspace @songhaus/server build",
-        "start": "yarn workspace @songhaus/server start"
+        "build": "yarn workspace @record-collection/client build && yarn workspace @record-collection/server build",
+        "start": "yarn workspace @record-collection/server start"
     },
     "dependencies": {
         "concurrently": "^7.6.0"

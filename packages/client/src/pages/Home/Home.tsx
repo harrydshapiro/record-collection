@@ -1,22 +1,25 @@
-import { useDispatch, useSelector } from "react-redux";
-import { selectAlbums, updateAlbums } from "../../store/libraryReducer";
-import { useEffect } from "react";
+import { useContext } from "react";
+import { PlayerContext } from "../../state/player.context";
+import PlayerController from "../../components/PlayerController/PlayerController";
+import {
+  nextTrack,
+  pausePlayback,
+  playPlayback,
+  previousTrack,
+} from "../../api/client";
 
 export function HomePage() {
-  const dispatch = useDispatch();
-
-  useEffect(() => dispatch(() => updateAlbums()), []);
-
-  const albums = useSelector(selectAlbums);
+  const playerContext = useContext(PlayerContext);
 
   return (
     <>
-      {albums.map((album) => (
-        <div>
-          <p>{album.albumName}</p>
-          <p>{album.albumArtist}</p>
-        </div>
-      ))}
+      <PlayerController
+        currentTrack={{}}
+        onPlay={playPlayback}
+        onPause={pausePlayback}
+        onNext={nextTrack}
+        onPrevious={previousTrack}
+      />
     </>
   );
 }

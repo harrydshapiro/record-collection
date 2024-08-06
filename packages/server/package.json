@@ -1,5 +1,5 @@
 {
-    "name": "@songhaus/server",
+    "name": "@record-collection/server",
     "version": "1.0.0",
     "private": true,
     "main": "src/export.ts",
