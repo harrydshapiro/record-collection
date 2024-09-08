@@ -1,7 +1,7 @@
 import React from "react";
 
 interface PlayerControllerProps {
-  currentTrack: {
+  currentTrack?: {
     trackName: string;
     artistName: string;
     albumName: string;
@@ -13,8 +13,14 @@ interface PlayerControllerProps {
   onPrevious: () => void;
 }
 
+const defaultTrackData: PlayerControllerProps["currentTrack"] = {
+  trackName: "No track",
+  artistName: "No artist",
+  albumName: "No album",
+};
+
 const PlayerController: React.FC<PlayerControllerProps> = ({
-  currentTrack,
+  currentTrack = defaultTrackData,
   onPlay,
   onPause,
   onNext,
@@ -29,11 +35,8 @@ const PlayerController: React.FC<PlayerControllerProps> = ({
       </div>
       <div className="controls">
         <button onClick={onPrevious}>Previous</button>
-        {currentTrack ? (
-          <button onClick={onPause}>Pause</button>
-        ) : (
-          <button onClick={onPlay}>Play</button>
-        )}
+        <button onClick={onPause}>Pause</button>
+        <button onClick={onPlay}>Play</button>
         <button onClick={onNext}>Next</button>
       </div>
     </div>

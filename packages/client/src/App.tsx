@@ -14,6 +14,7 @@ function App() {
   useEffect(() => {
     if (playerDispatchContextExists) {
       PlayerStateSSEConnection.addMessageHandler((update) => {
+        console.log("player state coming in", update);
         playerDispatchContext({ type: "", payload: update });
       });
     }

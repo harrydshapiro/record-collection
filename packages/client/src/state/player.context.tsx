@@ -2,9 +2,10 @@ import { createContext, useReducer } from "react";
 
 type PlayerState = {
   isPlaying: boolean;
-  currentTrack?: {};
+  currentTrackId?: string;
 };
 
+// TODO: Specify the type for the action payload
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Action = { type: string; payload: any };
 
@@ -20,6 +21,7 @@ const playerReducer: React.Reducer<PlayerState, Action> = (
 ) => {
   switch (action.type) {
     default: {
+      // TODO: Remove eslint diable once action.payload is typed
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return action.payload;
     }

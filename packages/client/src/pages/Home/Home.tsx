@@ -14,7 +14,7 @@ export function HomePage() {
   return (
     <>
       <PlayerController
-        currentTrack={{}}
+        isPlaying={playerContext.isPlaying}
         onPlay={playPlayback}
         onPause={pausePlayback}
         onNext={nextTrack}
