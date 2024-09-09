@@ -1,6 +1,6 @@
 import { MpcService } from "../../services/mpc.service";
 import { useError } from "utils/useError";
-import { API } from "routes/api-contract";
+import { API } from "src/types/api-contract";
 
 export const handleGetAlbums: API["library"]["albums"]["GET"] = async (
   req,

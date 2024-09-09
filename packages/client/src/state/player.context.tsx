@@ -1,29 +1,47 @@
-import { createContext, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
+import { PlayerStateSSEConnection } from "../api/client";
+import {
+  SoundSystemUpdate,
+  SoundSystemUpdates,
+} from "@record-collection/server";
 
-type PlayerState = {
-  isPlaying: boolean;
-  currentTrackId?: string;
+export type PlayerContextState = {
+  player: SoundSystemUpdate<"player">["payload"];
+  queue: SoundSystemUpdate<"queue">["payload"];
 };
 
-// TODO: Specify the type for the action payload
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Action = { type: string; payload: any };
-
-const initialPlayerState: PlayerState = { isPlaying: false };
+const initialPlayerState: PlayerContextState = {
+  player: {
+    currentSong: {},
+    status: {},
+  },
+  queue: {
+    fullQueue: [],
+    currentIndex: 0,
+  },
+};
 
 export const PlayerContext = createContext(initialPlayerState);
 export const PlayerDispatchContext =
-  createContext<React.Dispatch<Action> | null>(null);
+  createContext<React.Dispatch<SoundSystemUpdates> | null>(null);
 
-const playerReducer: React.Reducer<PlayerState, Action> = (
+const playerReducer: React.Reducer<PlayerContextState, SoundSystemUpdates> = (
   currentState,
   action,
-) => {
+): PlayerContextState => {
   switch (action.type) {
+    case "player":
+      return {
+        ...currentState,
+        player: action.payload,
+      };
+    case "queue":
+      return {
+        ...currentState,
+        queue: action.payload,
+      };
     default: {
-      // TODO: Remove eslint diable once action.payload is typed
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return action.payload;
+      return currentState;
     }
   }
 };
@@ -31,11 +49,13 @@ const playerReducer: React.Reducer<PlayerState, Action> = (
 export function PlayerProvider({ children }: { children: JSX.Element }) {
   const [playerState, dispatch] = useReducer(playerReducer, initialPlayerState);
 
+  useEffect(() => {
+    PlayerStateSSEConnection.addMessageHandler(dispatch);
+  }, []);
+
   return (
     <PlayerContext.Provider value={playerState}>
-      <PlayerDispatchContext.Provider value={dispatch}>
-        {children}
-      </PlayerDispatchContext.Provider>
+      {children}
     </PlayerContext.Provider>
   );
 }

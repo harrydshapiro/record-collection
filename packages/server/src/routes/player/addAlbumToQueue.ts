@@ -1,10 +1,11 @@
 import { RequestHandler } from "express";
 import { MpcService } from "../../services/mpc.service";
+import { AlbumId } from "../../types/api-contract";
 
 export const handleAddAlbumToQueue: RequestHandler<
   unknown,
   unknown,
-  { albumId: string }
+  { albumId: AlbumId }
 > = async (req, res) => {
   try {
     const addAlbumToQueueResult = await MpcService.addAlbumToQueue(

@@ -8,7 +8,7 @@ html {
   min-height: 100vh;
   width: 100vw;
   display: flex;
-  font-size: 10px;
+  font-size: 15px;
   font-family: 'Neue Montreal', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -22,27 +22,4 @@ body {
 
 p {
   margin: unset;
-}
-
-input {
-  border: none;
-  border-bottom: 1px solid black;
-  outline: none;
-  border-radius: none;
-  -webkit-appearance: none;
-  -webkit-border-radius: 0px;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-button, input[type="submit"] {
-  background: black;
-  color: white;
-  width: 90px;
-  margin: auto 0 0 auto;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 3px 0;
 }

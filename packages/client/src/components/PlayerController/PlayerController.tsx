@@ -1,42 +1,41 @@
 import React from "react";
+import styles from "./PlayerController.module.scss";
 
 interface PlayerControllerProps {
-  currentTrack?: {
-    trackName: string;
-    artistName: string;
-    albumName: string;
-  };
-  isPlaying: boolean;
   onPlay: () => void;
   onPause: () => void;
   onNext: () => void;
   onPrevious: () => void;
+  albumName?: string;
+  artistName?: string;
+  trackName?: string;
+  isPlaying: boolean;
 }
 
-const defaultTrackData: PlayerControllerProps["currentTrack"] = {
-  trackName: "No track",
-  artistName: "No artist",
-  albumName: "No album",
-};
-
 const PlayerController: React.FC<PlayerControllerProps> = ({
-  currentTrack = defaultTrackData,
   onPlay,
   onPause,
   onNext,
   onPrevious,
+  albumName = "Unknown Album",
+  artistName = "Unknown Artist",
+  trackName = "Unknown Track Name",
+  isPlaying,
 }) => {
   return (
-    <div className="player-controller">
-      <div className="track-info">
-        <h3>{currentTrack.trackName}</h3>
-        <p>{currentTrack.artistName}</p>
-        <p>{currentTrack.albumName}</p>
+    <div className={styles.playerController}>
+      <div className={styles.currentSongInfo}>
+        <p>{trackName}</p>
+        <p>{albumName}</p>
+        <p>{artistName}</p>
       </div>
-      <div className="controls">
+      <div className={styles.controls}>
         <button onClick={onPrevious}>Previous</button>
-        <button onClick={onPause}>Pause</button>
-        <button onClick={onPlay}>Play</button>
+        {isPlaying ? (
+          <button onClick={onPause}>Stop</button>
+        ) : (
+          <button onClick={onPlay}>Play</button>
+        )}
         <button onClick={onNext}>Next</button>
       </div>
     </div>

@@ -1,6 +1,19 @@
 import { Song } from "mpc-js";
-import { GetAlbumsReturnType } from "./services/mpc.service";
-import { API } from "./routes/api-contract";
+import {
+  API,
+  SoundSystemUpdates,
+  SoundSystemUpdate,
+  GetAlbumsReturnType,
+} from "./types/api-contract";
 import { RequestHandler } from "express";
+import { MpdSubsystem } from "./types/mpc";
 
-export { Song, GetAlbumsReturnType, API, RequestHandler };
+export {
+  Song,
+  GetAlbumsReturnType,
+  API,
+  RequestHandler,
+  SoundSystemUpdates,
+  MpdSubsystem,
+  SoundSystemUpdate,
+};

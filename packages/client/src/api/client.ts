@@ -1,5 +1,10 @@
 import axios from "axios";
-import { API, RequestHandler } from "@record-collection/server";
+import {
+  API,
+  SoundSystemUpdates,
+  RequestHandler,
+} from "@record-collection/server";
+import { AlbumId } from "@record-collection/server/src/types/api-contract";
 
 export type Album = {
   /**
@@ -34,15 +39,6 @@ export type Track = {
   duration: number;
 };
 
-type MPCStateChanges = {
-  player: {
-    trackId: Track["id"];
-    isPlaying: boolean;
-    volume: number;
-  };
-  queue: Track["id"][];
-};
-
 // TODO: Make this generic so that we can type the currentState field
 type OnMpcChangedCallback<MessagePayload> = (
   payload: MessagePayload,
@@ -69,11 +65,15 @@ export function pausePlayback() {
 }
 
 export function nextTrack() {
-  console.log("GO TO NEXT TRACK");
+  return client.post("/player/next");
 }
 
 export function previousTrack() {
-  console.log("GO TO PERVIOUS TRACK");
+  return client.post("/player/previous");
+}
+
+export function addAlbumToQueue(albumId: AlbumId) {
+  return client.post(`/player/queue/album`, { albumId });
 }
 
 export async function getCurrentQueueState() {
@@ -91,8 +91,8 @@ class SSEConnection<MessagePayload> {
     this.eventSource.addEventListener("open", () =>
       console.log("event source open", { url: this.url }),
     );
-    this.eventSource.addEventListener("error", () =>
-      console.error("event source error", { url: this.url }),
+    this.eventSource.addEventListener("error", (e) =>
+      console.error("event source error", { url: this.url, e }),
     );
   }
 
@@ -117,6 +117,6 @@ class SSEConnection<MessagePayload> {
   };
 }
 
-export const PlayerStateSSEConnection = new SSEConnection<
-  Partial<MPCStateChanges>
->(process.env.REACT_APP_BACKEND_URL + "/sse/stream");
+export const PlayerStateSSEConnection = new SSEConnection<SoundSystemUpdates>(
+  process.env.REACT_APP_BACKEND_URL + "/sse/stream",
+);

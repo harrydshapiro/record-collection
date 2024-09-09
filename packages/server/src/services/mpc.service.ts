@@ -1,61 +1,16 @@
-import { MPC, PlaylistItem, Song, Status } from "mpc-js";
+import { MPC, Song } from "mpc-js";
 import { Subject, Subscription } from "rxjs";
-
-/**
- * database - the song database has been modified after update
- *
- * update - a database update has started or finished; if the database was modified during the update, the database event is also emitted
- *
- * stored_playlist - a stored playlist has been modified, renamed, created or deleted
- *
- * playlist - the current playlist has been modified
- *
- * player - the player has been started, stopped or seeked
- *
- * mixer - the volume has been changed
- *
- * output - an audio output has been enabled or disabled
- *
- * options - options like repeat, random, crossfade, replay gain
- *
- * sticker - the sticker database has been modified
- *
- * subscription - a client has subscribed or unsubscribed to a channel
- *
- * message - a message was received on a channel this client is subscribed to; this event is only emitted when the queue is empty
- */
-type MpdSubsystem =
-  | "database"
-  | "update"
-  | "stored_playlist"
-  | "playlist"
-  | "player"
-  | "mixer"
-  | "output"
-  | "options"
-  | "sticker"
-  | "subscription"
-  | "message";
-
-type MpdSubsytemChangedUpdate = {
-  type: "player";
-  payload: {
-    currentSong: PlaylistItem;
-    status: Status;
-  };
-};
-
-export type GetAlbumsReturnType = Array<{
-  albumName: string;
-  albumArtist: string;
-  tracks: Song[];
-}>;
-
-type MPC2 = MPC;
+import { MpdSubsystem } from "../types/mpc";
+import {
+  AlbumId,
+  GetAlbumsReturnType,
+  SoundSystemUpdate,
+  SoundSystemUpdates,
+} from "../types/api-contract";
 
 class _MpcService {
-  mpc!: MPC2;
-  private $stateStream = new Subject<MpdSubsytemChangedUpdate>();
+  mpc!: MPC;
+  private $stateStream = new Subject<SoundSystemUpdates>();
 
   constructor({ port }: { port: number }) {
     if (!port) {
@@ -87,13 +42,14 @@ class _MpcService {
   }
 
   async addStateStreamSubscriber(
-    stateStreamSubscribeFn: Subject<MpdSubsytemChangedUpdate>["next"],
+    stateStreamSubscribeFn: Subject<SoundSystemUpdates>["next"],
   ): Promise<Subscription> {
     // Send current state so that UI has proper info on page load
     // Arguably should be a different route - stream open/clsoe != page load, maybe
     // diff data is needed on page load than SSE ...
     // Doing it this way bc I'm lazy and it's simplest for the current implementation.
     stateStreamSubscribeFn(await this.getCurrentPlayerState());
+    stateStreamSubscribeFn(await this.getQueueState());
     return this.$stateStream.subscribe({ next: stateStreamSubscribeFn });
   }
 
@@ -109,6 +65,9 @@ class _MpcService {
           case "player":
             void this.handlePlayerChanged();
             break;
+          case "playlist":
+            void this.handlePlaylistChanged();
+            break;
           default:
             console.log("subsystem changed:", subsystem);
         }
@@ -120,11 +79,19 @@ class _MpcService {
     await this.sendPlayerStateToStream();
   }
 
+  async handlePlaylistChanged() {
+    await this.sendQueueStateToStream();
+  }
+
   async sendPlayerStateToStream() {
     this.$stateStream.next(await this.getCurrentPlayerState());
   }
 
-  async getCurrentPlayerState(): Promise<MpdSubsytemChangedUpdate> {
+  async sendQueueStateToStream() {
+    this.$stateStream.next(await this.getQueueState());
+  }
+
+  async getCurrentPlayerState(): Promise<SoundSystemUpdate<"player">> {
     return {
       type: "player",
       payload: {
@@ -152,12 +119,29 @@ class _MpcService {
 
   async addTrackToQueue(trackId: string) {
     await this.mpc.currentPlaylist.addId(trackId);
-    return this.getQueue();
+    return this.getQueueState();
   }
 
-  async addAlbumToQueue(albumId: string) {
-    await this.mpc.currentPlaylist.add(albumId);
-    return this.getQueue();
+  async addAlbumToQueue(albumId: AlbumId) {
+    const { albumName, albumArtistName } = this.parseAlbumId(albumId);
+    console.log({ albumArtistName, albumName });
+    await this.mpc.database.findAdd(
+      [
+        ["album", albumName],
+        ["albumartist", albumArtistName],
+      ],
+      undefined,
+      undefined,
+      "track",
+    );
+    return await this.getQueue();
+  }
+
+  async getQueueState(): Promise<SoundSystemUpdate<"queue">> {
+    return {
+      type: "queue",
+      payload: await this.getQueue(),
+    };
   }
 
   async getQueue() {
@@ -171,10 +155,7 @@ class _MpcService {
     const [uniqueAlbumNames] = Array.from(
       (await this.mpc.database.list("album")).values(),
     );
-    const processedAlbums: Record<
-      string,
-      { albumName: string; albumArtist: string; tracks: Song[] }
-    > = {};
+    const processedAlbums: Record<string, GetAlbumsReturnType[0]> = {};
     for (const albumName of uniqueAlbumNames) {
       const filter = `(album == "${albumName}")`;
       const tracks = await this.mpc.database.find(filter);
@@ -185,9 +166,13 @@ class _MpcService {
         )[0] as Song;
         const prettyArtistName =
           track.albumArtist || track.artist || "Unknown Artist";
-        const albumEntryKey = `${prettyArtistName}_${prettyAlbumName}`;
+        const albumEntryKey: AlbumId = this.generateAlbumId({
+          albumName,
+          artistName: prettyArtistName,
+        });
         if (!processedAlbums[albumEntryKey]) {
           processedAlbums[albumEntryKey] = {
+            albumId: albumEntryKey,
             albumName: prettyAlbumName,
             albumArtist: prettyArtistName,
             tracks: [],
@@ -197,6 +182,32 @@ class _MpcService {
       }
     }
     return Object.values(processedAlbums);
+  }
+
+  private generateAlbumId({
+    albumName,
+    artistName,
+  }: {
+    artistName?: string;
+    albumName?: string;
+  }): AlbumId {
+    const albumIdDelimiter = "#";
+    const prettyArtistName =
+      artistName?.replace(albumIdDelimiter, "") || "unknown";
+    const prettyAlbumName =
+      albumName?.replace(albumIdDelimiter, "") || "unknown";
+    return `album#${prettyAlbumName}#artist#${prettyArtistName}`;
+  }
+
+  private parseAlbumId(albumId: AlbumId): {
+    albumName: string;
+    albumArtistName: string;
+  } {
+    const albumIdParts = albumId.split("#");
+    return {
+      albumName: albumIdParts[1],
+      albumArtistName: albumIdParts[3],
+    };
   }
 
   update() {

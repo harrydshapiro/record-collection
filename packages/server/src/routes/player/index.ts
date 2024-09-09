@@ -6,6 +6,7 @@ import { handleNext } from "./next";
 import { handlePrevious } from "./previous";
 import { handleAddTrackToQueue } from "./addTrackToQueue";
 import { handleAddAlbumToQueue } from "./addAlbumToQueue";
+import { handleRemoveItemsFromQueue } from "./removeItemsFromQueue";
 
 export const playerRouter = Router();
 
@@ -17,3 +18,4 @@ playerRouter.post("/previous", handlePrevious);
 playerRouter.get("/queue", handleGetQueue);
 playerRouter.post("/queue/track", handleAddTrackToQueue);
 playerRouter.post("/queue/album", handleAddAlbumToQueue);
+playerRouter.post("/queue/remove", handleRemoveItemsFromQueue);

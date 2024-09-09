@@ -1,0 +1,8 @@
+.libraryContainer {
+    display: flex;
+    flex-direction: column;
+
+    > .albumCoverWrapper {
+        margin-bottom: 10px;
+    }
+}

@@ -2,24 +2,10 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import "./App.css";
 import { HomePage } from "./pages/Home/Home";
-import { PlayerDispatchContext, PlayerProvider } from "./state/player.context";
-import { LibraryContext } from "./state/library.context";
-import { useContext, useEffect } from "react";
-import { PlayerStateSSEConnection } from "./api/client";
+import { PlayerProvider } from "./state/player.context";
+import { LibraryProvider } from "./state/library.context";
 
 function App() {
-  const playerDispatchContext = useContext(PlayerDispatchContext);
-  const playerDispatchContextExists = !!playerDispatchContext;
-
-  useEffect(() => {
-    if (playerDispatchContextExists) {
-      PlayerStateSSEConnection.addMessageHandler((update) => {
-        console.log("player state coming in", update);
-        playerDispatchContext({ type: "", payload: update });
-      });
-    }
-  }, [playerDispatchContextExists]);
-
   return (
     <BrowserRouter>
       <Routes>
@@ -35,11 +21,11 @@ function App() {
 function AppWithProviders() {
   return (
     <div className="App">
-      <LibraryContext.Provider value={{ albums: [] }}>
+      <LibraryProvider>
         <PlayerProvider>
           <App />
         </PlayerProvider>
-      </LibraryContext.Provider>
+      </LibraryProvider>
     </div>
   );
 }

@@ -1,0 +1,21 @@
+.playerController {
+    display: flex;
+    flex-direction: column;
+    
+    .controls {
+        display: flex;
+        flex-direction: row;
+        margin: 0 0 0 auto;
+    
+        button {
+            appearance: none;
+            width: unset;
+            background: white;
+            border: none;
+            font-size: unset;
+            cursor: pointer;
+            padding: 0;
+            margin: 0 0 0 10px;
+        }
+    }
+}

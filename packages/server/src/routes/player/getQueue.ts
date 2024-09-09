@@ -1,6 +1,6 @@
 import { useError } from "utils/useError";
 import { MpcService } from "../../services/mpc.service";
-import { API } from "routes/api-contract";
+import { API } from "src/types/api-contract";
 
 export const handleGetQueue: API["player"]["getQueue"]["GET"] = async (
   req,
