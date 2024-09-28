@@ -1,11 +1,12 @@
 import React from "react";
 import styles from "./AlbumCover.module.scss";
+import { AlbumId } from "@record-collection/server/src/types/api-contract";
 
 type AlbumCoverProps = {
-  onClick?: (albumId: string) => void;
+  onClick?: (albumId: AlbumId) => void;
   albumName: string;
   artistName: string;
-  albumId: string;
+  albumId?: AlbumId;
   albumArtUrl?: string;
   trackName?: string;
   trackId?: string;
@@ -23,10 +24,12 @@ export function AlbumCover({
     <div
       className={styles.AlbumCoverContainer}
       onClick={() => {
-        onClick && onClick(albumId);
+        onClick && albumId && onClick(albumId);
       }}
     >
-      {albumArtUrl && <img src={albumArtUrl}></img>}
+      {albumArtUrl && (
+        <img src={albumArtUrl} className={styles.albumCoverArt}></img>
+      )}
       {trackName && <p>{trackName}</p>}
       <p>{albumName}</p>
       <p>{artistName}</p>

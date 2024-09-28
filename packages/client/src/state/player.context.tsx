@@ -31,6 +31,7 @@ const playerReducer: React.Reducer<PlayerContextState, SoundSystemUpdates> = (
 ): PlayerContextState => {
   switch (action.type) {
     case "player":
+      console.log("changing player state", { currentState, action });
       return {
         ...currentState,
         player: action.payload,

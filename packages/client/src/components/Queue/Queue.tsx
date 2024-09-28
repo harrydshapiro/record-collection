@@ -1,70 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Queue.module.scss";
 import { PlayerContextState } from "../../state/player.context";
-import { AlbumCover } from "../AlbumCover/AlbumCover";
-
-type onItemSelectFn = (position: number) => void | Promise<void>;
+import { removeItemsFromQueue } from "../../api/client";
+import { QueueControls } from "./QueueControls/QueueControls";
+import { QueueItem } from "./QueueItem/QueueItem";
 
 type QueueProps = {
   currentQueue: PlayerContextState["queue"];
 };
 
-type QueueItemProps = {
-  queueItemInfo: PlayerContextState["queue"]["fullQueue"][0];
-  onItemSelect: onItemSelectFn;
-  isSelected: boolean;
-};
-
-function QueueItem({
-  queueItemInfo,
-  onItemSelect,
-  isSelected,
-}: QueueItemProps): JSX.Element {
-  return (
-    <div className={styles.queueItem}>
-      <input
-        type="checkbox"
-        checked={isSelected}
-        onChange={() => onItemSelect(queueItemInfo.position!)}
-      />
-      <div>
-        <AlbumCover
-          // TODO: Figure out if we need this album ID
-          albumId={""}
-          albumName={queueItemInfo.album!}
-          artistName={queueItemInfo.albumArtist!}
-          trackName={queueItemInfo.title}
-        />
-      </div>
-    </div>
-  );
-}
-
 export function Queue({ currentQueue }: QueueProps): JSX.Element {
-  const [selectedQueueItemIndices, setSelectedQueueItemIndices] = useState<
+  const [selectedQueueItemIds, setSelectedQueueItemIds] = useState<
     Array<number>
   >([]);
 
   const toggleItemSelection = (index: number) => {
-    if (!selectedQueueItemIndices.includes(index)) {
-      setSelectedQueueItemIndices([...selectedQueueItemIndices, index]);
+    if (!selectedQueueItemIds.includes(index)) {
+      setSelectedQueueItemIds([...selectedQueueItemIds, index]);
     } else {
-      setSelectedQueueItemIndices(
-        selectedQueueItemIndices.filter((i) => i !== index),
-      );
+      setSelectedQueueItemIds(selectedQueueItemIds.filter((i) => i !== index));
     }
+  };
+
+  const removeSelectedQueueItems = async () => {
+    if (selectedQueueItemIds.length === 0) {
+      return;
+    }
+    await removeItemsFromQueue(selectedQueueItemIds);
+  };
+
+  // Ensures that queue items do not remain selected in the component's local state after they are
+  // removed from the MPD queue. Could be removed by user action w/ this component, or could be
+  // removed by some other process entirely (thats why we react to currentQueue.fullQueue instead of
+  // running this code in removeSelectedQueueItems).
+  useEffect(() => {
+    const currentQueueIds = currentQueue.fullQueue.map(({ id }) => id);
+    const validSelectedQueueItemIds = selectedQueueItemIds.filter(
+      (id) => typeof id === "number" && currentQueueIds.includes(id),
+    );
+    setSelectedQueueItemIds(validSelectedQueueItemIds);
+  }, [currentQueue.fullQueue]);
+
+  const toggleSelectAll = () => {
+    // If every item is already selected, deselects them all
+    // Subtracing 1 here because we don't want to select the currently playing song in the queue
+    if (selectedQueueItemIds.length === currentQueue.fullQueue.length - 1) {
+      setSelectedQueueItemIds([]);
+      return;
+    }
+    setSelectedQueueItemIds(
+      // Same thing with ignoring the first song - the user doesn't think of it as part of the queue
+      currentQueue.fullQueue.slice(1).map((item) => item.id!),
+    );
   };
 
   return (
     <div className={styles.QueueContainer}>
+      <QueueControls
+        onRemove={removeSelectedQueueItems}
+        onSelectAll={toggleSelectAll}
+      />
       {currentQueue.fullQueue
-        .slice(1, currentQueue.fullQueue.length)
+        .slice((currentQueue.currentIndex || 0) + 1)
         .map((queueItem, index) => (
           <QueueItem
             queueItemInfo={queueItem}
             isSelected={
-              typeof queueItem.position === "number"
-                ? selectedQueueItemIndices.includes(queueItem.position)
+              typeof queueItem.id === "number"
+                ? selectedQueueItemIds.includes(queueItem.id)
                 : false
             }
             onItemSelect={toggleItemSelection}

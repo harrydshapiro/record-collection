@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { PlayerContext } from "../../state/player.context";
 import PlayerController from "../../components/PlayerController/PlayerController";
 import {
@@ -18,6 +18,25 @@ export function HomePage() {
   const playerContext = useContext(PlayerContext);
   const libraryContext = useContext(LibraryContext);
 
+  const currentSong = playerContext.player.currentSong;
+  const { album, albumArtist, title, id: songId } = currentSong || {};
+
+  // TODO: This should be abstracted... somewhere. Somehow. Search for selector-esque patterns for context
+  // Should one context even know about the other? Might be an antipattern
+  const getAlbum = useCallback(
+    ({ albumName, artistName }: { albumName: string; artistName: string }) => {
+      return libraryContext.albums.find(
+        (a) => a.albumArtist === artistName && a.albumName === albumName,
+      );
+    },
+    [libraryContext.albums],
+  );
+
+  const currentAlbum =
+    album && albumArtist
+      ? getAlbum({ albumName: album, artistName: albumArtist })
+      : undefined;
+
   return (
     <div className={styles.homeContainer}>
       <div className={styles.leftBar}>
@@ -29,9 +48,11 @@ export function HomePage() {
       <div className={styles.rightBar}>
         <div className={styles.playerContainerWrapper}>
           <PlayerController
-            albumName={playerContext.player.currentSong.album}
-            artistName={playerContext.player.currentSong.albumArtist}
-            trackName={playerContext.player.currentSong.title}
+            albumName={album}
+            artistName={albumArtist}
+            trackName={title}
+            songId={songId}
+            albumCoverArtUrl={currentAlbum?.albumCoverArtUrl}
             isPlaying={playerContext.player.status.state === "play"}
             onPlay={playPlayback}
             onPause={pausePlayback}

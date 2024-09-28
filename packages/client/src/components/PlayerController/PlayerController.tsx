@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./PlayerController.module.scss";
+import { Button } from "../Button/Button";
 
 interface PlayerControllerProps {
   onPlay: () => void;
@@ -9,7 +10,9 @@ interface PlayerControllerProps {
   albumName?: string;
   artistName?: string;
   trackName?: string;
+  albumCoverArtUrl?: string;
   isPlaying: boolean;
+  songId?: number;
 }
 
 const PlayerController: React.FC<PlayerControllerProps> = ({
@@ -20,23 +23,46 @@ const PlayerController: React.FC<PlayerControllerProps> = ({
   albumName = "Unknown Album",
   artistName = "Unknown Artist",
   trackName = "Unknown Track Name",
+  albumCoverArtUrl = "",
+  songId,
   isPlaying,
 }) => {
   return (
     <div className={styles.playerController}>
       <div className={styles.currentSongInfo}>
-        <p>{trackName}</p>
-        <p>{albumName}</p>
-        <p>{artistName}</p>
+        {typeof songId === "number" ? (
+          <>
+            {albumCoverArtUrl && (
+              <img
+                src={albumCoverArtUrl}
+                alt={`Cover art - ${albumName}`}
+                className={styles.albumCoverArt}
+              />
+            )}
+            <p>{trackName}</p>
+            <p>{albumName}</p>
+            <p>{artistName}</p>
+          </>
+        ) : (
+          <>
+            <p>Nuthin playin...</p>
+            <br></br>
+            <br></br>
+          </>
+        )}
       </div>
       <div className={styles.controls}>
-        <button onClick={onPrevious}>Previous</button>
+        <Button
+          onClick={onPrevious}
+          text={"Previous"}
+          className={styles.button}
+        />
         {isPlaying ? (
-          <button onClick={onPause}>Stop</button>
+          <Button onClick={onPause} text={"Stop"} className={styles.button} />
         ) : (
-          <button onClick={onPlay}>Play</button>
+          <Button onClick={onPlay} text={"Play"} className={styles.button} />
         )}
-        <button onClick={onNext}>Next</button>
+        <Button onClick={onNext} text={"Next"} className={styles.button} />
       </div>
     </div>
   );

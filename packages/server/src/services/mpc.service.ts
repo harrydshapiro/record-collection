@@ -7,6 +7,11 @@ import {
   SoundSystemUpdate,
   SoundSystemUpdates,
 } from "../types/api-contract";
+import {
+  generateAlbumCoverArtUrl,
+  generateAlbumId,
+  parseAlbumId,
+} from "./library.helpers";
 
 class _MpcService {
   mpc!: MPC;
@@ -77,6 +82,10 @@ class _MpcService {
 
   async handlePlayerChanged() {
     await this.sendPlayerStateToStream();
+    // This is stupid - but....
+    // When the current song changes, there is no MPC event emitted for the playlist changing, which means we don't tell the UI
+    // about the new currentIndex
+    await this.sendQueueStateToStream();
   }
 
   async handlePlaylistChanged() {
@@ -92,10 +101,14 @@ class _MpcService {
   }
 
   async getCurrentPlayerState(): Promise<SoundSystemUpdate<"player">> {
+    let currentSong = await this.mpc.status.currentSong();
+    if (!currentSong || Object.keys(currentSong).length === 0) {
+      currentSong = (await this.mpc.currentPlaylist.playlistInfo())?.[0];
+    }
     return {
       type: "player",
       payload: {
-        currentSong: await this.mpc.status.currentSong(),
+        currentSong,
         status: await this.mpc.status.status(),
       },
     };
@@ -105,16 +118,30 @@ class _MpcService {
     return this.mpc.playback.play();
   }
 
-  pause() {
+  async pause() {
     return this.mpc.playback.pause();
   }
 
-  next() {
-    return this.mpc.playback.next();
+  async next() {
+    try {
+      if ((await this.mpc.status.status()).state !== "play") {
+        await this.mpc.playback.play();
+      }
+      return await this.mpc.playback.next();
+    } catch (err) {
+      console.error("Error playing next song", err);
+    }
   }
 
-  previous() {
-    return this.mpc.playback.previous();
+  async previous() {
+    try {
+      if ((await this.mpc.status.status()).state !== "play") {
+        await this.mpc.playback.play();
+      }
+      return await this.mpc.playback.previous();
+    } catch (err) {
+      console.error("Error playing previous song", err);
+    }
   }
 
   async addTrackToQueue(trackId: string) {
@@ -123,8 +150,7 @@ class _MpcService {
   }
 
   async addAlbumToQueue(albumId: AlbumId) {
-    const { albumName, albumArtistName } = this.parseAlbumId(albumId);
-    console.log({ albumArtistName, albumName });
+    const { albumName, albumArtistName } = parseAlbumId(albumId);
     await this.mpc.database.findAdd(
       [
         ["album", albumName],
@@ -155,63 +181,65 @@ class _MpcService {
     const [uniqueAlbumNames] = Array.from(
       (await this.mpc.database.list("album")).values(),
     );
+
     const processedAlbums: Record<string, GetAlbumsReturnType[0]> = {};
+
     for (const albumName of uniqueAlbumNames) {
-      const filter = `(album == "${albumName}")`;
-      const tracks = await this.mpc.database.find(filter);
+      const albumNameFilter = `(album == "${albumName}")`;
+      // Bear in mind these track could be from MULTIPLE artists (i.e. multiple albums simply titled "Greatest Hits", or tracks missing an album name for some reason)
+      const tracks = await this.mpc.database.find(albumNameFilter);
       const prettyAlbumName = albumName || "Unknown Album";
+
       for (const track of tracks) {
         const fullTrack = (
           await this.mpc.database.listAllInfo(track.path)
         )[0] as Song;
+
         const prettyArtistName =
           track.albumArtist || track.artist || "Unknown Artist";
-        const albumEntryKey: AlbumId = this.generateAlbumId({
+
+        // This ensures we're doing the combination of album name AND artist name to uniquely identify an album.
+        // If an artist puts out multiple albums of the same name... well shit. I'll probably just modify the file metadata for that if it ever happens.
+        const albumEntryKey: AlbumId = generateAlbumId({
           albumName,
           artistName: prettyArtistName,
         });
+
         if (!processedAlbums[albumEntryKey]) {
           processedAlbums[albumEntryKey] = {
             albumId: albumEntryKey,
             albumName: prettyAlbumName,
             albumArtist: prettyArtistName,
+            albumCoverArtUrl: generateAlbumCoverArtUrl({
+              albumId: albumEntryKey,
+            }),
             tracks: [],
           };
         }
+
         processedAlbums[albumEntryKey].tracks.push(fullTrack);
       }
     }
+
     return Object.values(processedAlbums);
   }
 
-  private generateAlbumId({
-    albumName,
-    artistName,
-  }: {
-    artistName?: string;
-    albumName?: string;
-  }): AlbumId {
-    const albumIdDelimiter = "#";
-    const prettyArtistName =
-      artistName?.replace(albumIdDelimiter, "") || "unknown";
-    const prettyAlbumName =
-      albumName?.replace(albumIdDelimiter, "") || "unknown";
-    return `album#${prettyAlbumName}#artist#${prettyArtistName}`;
-  }
-
-  private parseAlbumId(albumId: AlbumId): {
-    albumName: string;
-    albumArtistName: string;
-  } {
-    const albumIdParts = albumId.split("#");
-    return {
-      albumName: albumIdParts[1],
-      albumArtistName: albumIdParts[3],
-    };
+  async getTracksForAlbum({ albumId }: { albumId: AlbumId }) {
+    const { albumName, albumArtistName } = parseAlbumId(albumId);
+    return this.mpc.database.find([
+      ["album", albumName],
+      ["albumartist", albumArtistName],
+    ]);
   }
 
   update() {
     return this.mpc.database.update();
+  }
+
+  removeItemsFromQueue(songIdsToDelete: number[]) {
+    return Promise.all(
+      songIdsToDelete.map((id) => this.mpc.currentPlaylist.deleteId(id)),
+    );
   }
 }
 

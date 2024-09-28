@@ -81,6 +81,12 @@ export async function getCurrentQueueState() {
   return response.data as ExtractResponseBody<API["player"]["getQueue"]["GET"]>;
 }
 
+export async function removeItemsFromQueue(songIdsToRemove: number[]) {
+  await client.post("/player/queue/remove", {
+    songIdsToRemove,
+  });
+}
+
 class SSEConnection<MessagePayload> {
   private url!: string;
   private eventSource!: EventSource;

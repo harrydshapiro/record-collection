@@ -1,10 +1,15 @@
 import { RequestHandler } from "express";
 import { MpcService } from "../../services/mpc.service";
 
-export const handleRemoveItemsFromQueue: RequestHandler = async (req, res) => {
+export const handleRemoveItemsFromQueue: RequestHandler<
+  unknown,
+  unknown,
+  { songIdsToRemove: number[] }
+> = async (req, res) => {
   try {
-    const nextResult = await MpcService.next();
-    return res.status(200).send(nextResult);
+    const { songIdsToRemove } = req.body;
+    await MpcService.removeItemsFromQueue(songIdsToRemove);
+    return res.sendStatus(201);
   } catch (err) {
     return res.status(500).send(err);
   }

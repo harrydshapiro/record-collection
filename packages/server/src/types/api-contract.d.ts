@@ -1,4 +1,5 @@
 import { RequestHandler } from "express";
+import { ReadStream } from "fs";
 import { PlaylistItem, Song, Status } from "mpc-js";
 
 export type API = {
@@ -25,6 +26,18 @@ export type API = {
         unknown
       >;
     };
+    album: {
+      albumId: {
+        ["cover-art"]: {
+          GET: RequestHandler<
+            { albumId: AlbumId },
+            ReadStream | Error,
+            unknown,
+            unknown
+          >;
+        };
+      };
+    };
   };
 };
 
@@ -34,7 +47,7 @@ type SoundSystemUpdateMap = {
     currentIndex?: number;
   };
   player: {
-    currentSong: PlaylistItem;
+    currentSong?: PlaylistItem;
     status: Status;
   };
   database: null;
@@ -61,13 +74,14 @@ export type SoundSystemUpdates =
   | SoundSystemUpdate<"queue">;
 
 /**
- * i.e. album#continuum#artist#john_mayer
+ * i.e. "album#Continuum#artist#John Mayer"
  */
-type AlbumId = string;
+type AlbumId = `album#${string}#artist${string}`;
 
 export type GetAlbumsReturnType = Array<{
   albumId: AlbumId;
   albumName: string;
   albumArtist: string;
+  albumCoverArtUrl?: string;
   tracks: Song[];
 }>;
