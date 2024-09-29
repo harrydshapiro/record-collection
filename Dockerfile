@@ -40,10 +40,13 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=cache,target=/root/.yarn \
     yarn install --frozen-lockfile
 
-RUN npm install react-scripts
+RUN yarn add react-scripts typescript
 
 # Copy the rest of the source files into the image.
 COPY . .
+
+RUN echo "FOOOBAR"
+
 # Run the build script.
 RUN yarn run build
 
