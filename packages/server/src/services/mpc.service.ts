@@ -185,7 +185,7 @@ class _MpcService {
       `${Date.now()} uniqueAlbumNames: ${JSON.stringify(uniqueAlbumNames)}`,
     );
     const groupedAlbumTags = (
-      await this.mpc.database.list("album", "", ["albumartist"])
+      await this.mpc.database.list("album", [], ["albumartist"])
     ).values();
     console.log(
       `${Date.now()} groupedAlbumTags: ${JSON.stringify(groupedAlbumTags)}`,
