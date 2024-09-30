@@ -4,7 +4,6 @@ import { API } from "src/types/api-contract";
 
 export const handleGetCoverArt: API["library"]["album"]["albumId"]["cover-art"]["GET"] =
   async (req, res) => {
-    console.log("HELLO WORLD");
     const { albumId } = req.params;
 
     const coverArtStream = await LibraryService.getAlbumCoverArt({ albumId });

@@ -83,5 +83,4 @@ export type GetAlbumsReturnType = Array<{
   albumName: string;
   albumArtist: string;
   albumCoverArtUrl?: string;
-  tracks: Song[];
 }>;

@@ -1,4 +1,4 @@
-import { MPC, Song } from "mpc-js";
+import { MPC } from "mpc-js";
 import { Subject, Subscription } from "rxjs";
 import { MpdSubsystem } from "../types/mpc";
 import {
@@ -178,59 +178,25 @@ class _MpcService {
   }
 
   async getAlbums(): Promise<GetAlbumsReturnType> {
-    const [uniqueAlbumNames] = Array.from(
-      (await this.mpc.database.list("album")).values(),
-    );
-    console.log(
-      `${Date.now()} uniqueAlbumNames: ${JSON.stringify(uniqueAlbumNames)}`,
-    );
-    const groupedAlbumTags = (
-      await this.mpc.database.list("album", undefined, ["albumartist"])
-    ).values();
-    console.log(
-      `${Date.now()} groupedAlbumTags: ${JSON.stringify(groupedAlbumTags)}`,
+    const groupedAlbumTags = await this.mpc.database.list(
+      "Album",
+      [],
+      ["AlbumArtist"],
     );
 
-    const processedAlbums: Record<string, GetAlbumsReturnType[0]> = {};
-
-    for (const albumName of uniqueAlbumNames) {
-      const albumNameFilter = `(album == "${albumName}")`;
-      // Bear in mind these track could be from MULTIPLE artists (i.e. multiple albums simply titled "Greatest Hits", or tracks missing an album name for some reason)
-      const tracks = await this.mpc.database.find(albumNameFilter);
-      const prettyAlbumName = albumName || "Unknown Album";
-
-      for (const track of tracks) {
-        const fullTrack = (
-          await this.mpc.database.listAllInfo(track.path)
-        )[0] as Song;
-
-        const prettyArtistName =
-          track.albumArtist || track.artist || "Unknown Artist";
-
-        // This ensures we're doing the combination of album name AND artist name to uniquely identify an album.
-        // If an artist puts out multiple albums of the same name... well shit. I'll probably just modify the file metadata for that if it ever happens.
-        const albumEntryKey: AlbumId = generateAlbumId({
+    return Array.from(groupedAlbumTags.entries()).map(
+      ([[albumArtist], [albumName]]) => {
+        const albumId = generateAlbumId({ albumName, artistName: albumArtist });
+        return {
+          albumArtist,
           albumName,
-          artistName: prettyArtistName,
-        });
-
-        if (!processedAlbums[albumEntryKey]) {
-          processedAlbums[albumEntryKey] = {
-            albumId: albumEntryKey,
-            albumName: prettyAlbumName,
-            albumArtist: prettyArtistName,
-            albumCoverArtUrl: generateAlbumCoverArtUrl({
-              albumId: albumEntryKey,
-            }),
-            tracks: [],
-          };
-        }
-
-        processedAlbums[albumEntryKey].tracks.push(fullTrack);
-      }
-    }
-
-    return Object.values(processedAlbums);
+          albumId,
+          albumCoverArtUrl: generateAlbumCoverArtUrl({
+            albumId,
+          }),
+        };
+      },
+    );
   }
 
   async getTracksForAlbum({ albumId }: { albumId: AlbumId }) {
