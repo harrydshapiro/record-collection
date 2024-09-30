@@ -181,6 +181,15 @@ class _MpcService {
     const [uniqueAlbumNames] = Array.from(
       (await this.mpc.database.list("album")).values(),
     );
+    console.log(
+      `${Date.now()} uniqueAlbumNames: ${JSON.stringify(uniqueAlbumNames)}`,
+    );
+    const groupedAlbumTags = (
+      await this.mpc.database.list("album", "", ["albumartist"])
+    ).values();
+    console.log(
+      `${Date.now()} groupedAlbumTags: ${JSON.stringify(groupedAlbumTags)}`,
+    );
 
     const processedAlbums: Record<string, GetAlbumsReturnType[0]> = {};
 
