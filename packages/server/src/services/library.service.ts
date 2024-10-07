@@ -23,6 +23,7 @@ class _LibraryService {
   }): Promise<ReadStream | void> {
     const tracks = await MpcService.getTracksForAlbum({ albumId });
     const directory = tracks[0].path.split("/").slice(0, -1).join("/");
+    console.log("getAlbumCoverArt", { directory });
     const localAlbumArtPath = await getLocalAlbumArtPath(directory);
     if (localAlbumArtPath) {
       return createReadStream(localAlbumArtPath);
