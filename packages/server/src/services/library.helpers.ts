@@ -47,15 +47,14 @@ export function getLocalAlbumPath(albumId: AlbumId): string {
 }
 
 export async function getLocalAlbumArtPath(
-  albumId: AlbumId,
+  albumDirectoryPath: string,
 ): Promise<string | undefined> {
-  const albumPath = getLocalAlbumPath(albumId);
-  const fileNames = await readdir(albumPath);
+  const fileNames = await readdir(albumDirectoryPath);
   const albumArtFileName = fileNames.find((fileName) =>
     fileName.toLowerCase().match(/cover.(jpg|jpeg|png)/),
   );
   if (!albumArtFileName) {
     return;
   }
-  return path.join(albumPath, albumArtFileName);
+  return path.join(albumDirectoryPath, albumArtFileName);
 }

@@ -1,6 +1,7 @@
 import { AlbumId } from "src/types/api-contract";
 import { getLocalAlbumArtPath } from "./library.helpers";
 import { createReadStream, ReadStream } from "fs";
+import { MpcService } from "./mpc.service";
 
 /**
  * Intended for interacting with the library (i.e. fetching album art)
@@ -20,8 +21,9 @@ class _LibraryService {
   }: {
     albumId: AlbumId;
   }): Promise<ReadStream | void> {
-    const localAlbumArtPath = await getLocalAlbumArtPath(albumId);
-    console.log("localAlbumArtPath", localAlbumArtPath);
+    const tracks = await MpcService.getTracksForAlbum({ albumId });
+    const directory = tracks[0].path.split("/").slice(0, -1).join("/");
+    const localAlbumArtPath = await getLocalAlbumArtPath(directory);
     if (localAlbumArtPath) {
       return createReadStream(localAlbumArtPath);
     }

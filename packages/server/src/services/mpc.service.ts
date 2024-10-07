@@ -12,6 +12,7 @@ import {
   generateAlbumId,
   parseAlbumId,
 } from "./library.helpers";
+import { memoize } from "lodash";
 
 class _MpcService {
   mpc!: MPC;
@@ -199,15 +200,16 @@ class _MpcService {
     );
   }
 
-  async getTracksForAlbum({ albumId }: { albumId: AlbumId }) {
+  getTracksForAlbum = memoize(async ({ albumId }: { albumId: AlbumId }) => {
     const { albumName, albumArtistName } = parseAlbumId(albumId);
-    return this.mpc.database.find([
+    return await this.mpc.database.find([
       ["album", albumName],
       ["albumartist", albumArtistName],
     ]);
-  }
+  });
 
   update() {
+    this.getTracksForAlbum.cache.clear?.();
     return this.mpc.database.update();
   }
 

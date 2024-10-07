@@ -15,5 +15,7 @@ export const handleGetCoverArt: API["library"]["album"]["albumId"]["cover-art"][
       await streamMimeType
     ).getMimeType(coverArtStream);
     res.setHeader("Content-Type", mime);
+    // Cache for 1 week
+    res.setHeader("Cache-Control", "public, max-age=604800");
     stream.pipe(res);
   };
