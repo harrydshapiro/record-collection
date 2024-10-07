@@ -51,7 +51,7 @@ export async function getLocalAlbumArtPath(
 ): Promise<string | undefined> {
   const fileNames = await readdir(albumDirectoryPath);
   const albumArtFileName = fileNames.find((fileName) =>
-    fileName.toLowerCase().match(/cover.(jpg|jpeg|png)/),
+    fileName.toLowerCase().match(/^cover.(jpg|jpeg|png)/),
   );
   console.log("getLocalAlbumArtPath 1/2", { fileNames, albumArtFileName });
   if (!albumArtFileName) {
