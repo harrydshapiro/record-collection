@@ -31,10 +31,6 @@ class _LibraryService {
     console.log("getAlbumCoverArt", { directory, localAlbumArtPath });
     if (localAlbumArtPath) {
       return createReadStream(localAlbumArtPath);
-    } else {
-      return createReadStream(
-        "https://cdn2.bigcommerce.com/server1900/beb6d/products/1329/images/2929/CD1S.FCLR__92507.1629312849.600.600.png?c=2",
-      );
     }
   }
 }
