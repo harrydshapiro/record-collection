@@ -203,8 +203,8 @@ class _MpcService {
   getTracksForAlbum = memoize(async ({ albumId }: { albumId: AlbumId }) => {
     const { albumName, albumArtistName } = parseAlbumId(albumId);
     return await this.mpc.database.find([
-      ["album", albumName],
-      ["albumartist", albumArtistName],
+      ["Album", albumName],
+      ["AlbumArtist", albumArtistName],
     ]);
   });
 
