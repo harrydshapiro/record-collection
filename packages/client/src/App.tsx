@@ -20,13 +20,13 @@ function App() {
 // we can susbcribe to the SSE connection and publish its events to the contexts
 function AppWithProviders() {
   return (
-    <div className="App">
+    <>
       <LibraryProvider>
         <PlayerProvider>
           <App />
         </PlayerProvider>
       </LibraryProvider>
-    </div>
+    </>
   );
 }
 

@@ -2,14 +2,20 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    overflow: scroll;
     width: calc(100vw - 40px);
     max-width: 1200px;
-    margin: 20px auto auto;
+    padding: 20px 0;
+    margin: 0 auto;
     box-sizing: border-box;
+    height: 100%;
     
     > div {
         width: 48%;
+        max-height: 100%;
+        overflow-y: scroll;
+        &::-webkit-scrollbar {
+            display: none;
+        }
 
         &.leftBar {
             text-align: left;
