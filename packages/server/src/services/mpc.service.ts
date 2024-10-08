@@ -185,19 +185,34 @@ class _MpcService {
       ["AlbumArtist"],
     );
 
-    return Array.from(groupedAlbumTags.entries()).map(
-      ([[albumArtist], [albumName]]) => {
-        const albumId = generateAlbumId({ albumName, artistName: albumArtist });
-        return {
-          albumArtist,
-          albumName,
-          albumId,
-          albumCoverArtUrl: generateAlbumCoverArtUrl({
+    const albums: GetAlbumsReturnType = [];
+
+    Array.from(groupedAlbumTags.entries()).map(
+      ([[albumArtist], albumNames]) => {
+        if (!albumArtist) {
+          return;
+        }
+        albumNames.forEach((albumName) => {
+          if (!albumName) {
+            return;
+          }
+          const albumId = generateAlbumId({
+            albumName,
+            artistName: albumArtist,
+          });
+          albums.push({
+            albumArtist,
+            albumName,
             albumId,
-          }),
-        };
+            albumCoverArtUrl: generateAlbumCoverArtUrl({
+              albumId,
+            }),
+          });
+        });
       },
     );
+
+    return albums;
   }
 
   getTracksForAlbum = memoize(async ({ albumId }: { albumId: AlbumId }) => {

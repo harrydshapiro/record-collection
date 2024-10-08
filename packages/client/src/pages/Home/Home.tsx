@@ -25,11 +25,13 @@ export function HomePage() {
   // Should one context even know about the other? Might be an antipattern
   const getAlbum = useCallback(
     ({ albumName, artistName }: { albumName: string; artistName: string }) => {
+      // eslint-disable-next-line no-debugger
+      debugger;
       return libraryContext.albums.find(
         (a) => a.albumArtist === artistName && a.albumName === albumName,
       );
     },
-    [libraryContext.albums],
+    [libraryContext, album, albumArtist],
   );
 
   const currentAlbum =
