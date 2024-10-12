@@ -3,11 +3,11 @@ Description=Record Collection Service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/node /Users/harryshapiro/developer/record-collection/packages/server/dist/index.js
+ExecStart=/Users/harryshapiro/developer/record-collection/run.sh
 Restart=always
 User=harryshapiro
 Environment=NODE_ENV=production
-WorkingDirectory=/Users/harryshapiro/developer/record-collection/packages/server
+WorkingDirectory=/Users/harryshapiro/developer/record-collection
 
 [Install]
 WantedBy=multi-user.target
