@@ -1,3 +1,4 @@
 #!/bin/bash
 
-yarn run start
+cd packages/server/dist && node index.js
+
