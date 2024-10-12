@@ -1,0 +1,15 @@
+[Unit]
+Description=record-collection app for home stereo
+
+[Service]
+ExecStart=/usr/bin/node /Users/harryshapiro/developer/record-collection/packages/server/dist/index.js
+Restart=always
+User=harryshapiro
+# Note Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
+Group=nogroup
+# Environment=PATH=/usr/bin:/usr/local/bin
+# Environment=NODE_ENV=production
+WorkingDirectory=/Users/harryshapiro/developer/record-collection
+
+[Install]
+WantedBy=multi-user.target
