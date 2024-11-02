@@ -4,9 +4,9 @@ After=network.target
 
 [Service]
 Type=simple
-User=your-user # Replace with the user that should run the script
-WorkingDirectory=/path/to/your/app # Replace with the directory of your app
-ExecStart=/usr/bin/node /Users/harryshapiro/developer/record-collection/test.js # Replace with the path to your main Node.js file
+User=harryshapiro # Replace with the user that should run the script
+WorkingDirectory=/Users/harryshapiro/developer/record-collection/ # Replace with the directory of your app
+ExecStart=/usr/bin/node test.js # Replace with the path to your main Node.js file
 Restart=on-failure
 
 [Install]
