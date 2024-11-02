@@ -10,6 +10,7 @@
         "start": "yarn workspace @record-collection/server start"
     },
     "dependencies": {
-        "concurrently": "^7.6.0"
+        "concurrently": "^7.6.0",
+        "express": "^4.21.1"
     }
 }
