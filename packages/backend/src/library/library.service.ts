@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MPC, Song } from 'mpc-js';
+import { SortedArray } from 'src/utils/generic';
 
 @Injectable()
 export class LibraryService {
@@ -29,10 +30,15 @@ export class LibraryService {
   > {
     const command = 'list album group albumartist';
     const queryOutput = await this.mpc.sendCommand(command);
-    const response: Array<{
+    const response = new SortedArray<{
       albumName: string;
       albumArtistName: string;
-    }> = [];
+    }>((a, b) => {
+      if (a.albumArtistName === b.albumArtistName) {
+        return a.albumName > b.albumName ? 1 : -1;
+      }
+      return a.albumArtistName > b.albumArtistName ? 1 : -1;
+    });
     let mostRecentArtist = '';
     queryOutput.forEach((queryOutputLine: string) => {
       const queryOutputTagValueDelimiter = ': ';

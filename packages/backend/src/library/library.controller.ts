@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { LibraryService } from './library.service';
 import { Song } from 'mpc-js';
 
