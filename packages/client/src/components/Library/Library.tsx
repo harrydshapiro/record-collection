@@ -10,10 +10,15 @@ type LibraryProps = {
 };
 
 export function Library({ albums, onAlbumSelect }: LibraryProps) {
+  const sortByArtistThenAlbum = (a: GetAlbumsReturnType[0], b: GetAlbumsReturnType[0]) => (a.albumArtist === b.albumArtist 
+    ? a.albumName > b.albumName 
+        ? 1 : -1 
+    : a.albumArtist > b.albumArtist 
+        ? 1 : -1)
   return (
     <div className={styles.libraryContainer}>
       {albums
-        .sort((a, b) => (a.albumArtist > b.albumArtist ? 1 : -1))
+        .sort(sortByArtistThenAlbum)
         .map((a, index) => (
           <div className={styles.albumCoverWrapper} key={index}>
             <AlbumCover
