@@ -48,7 +48,11 @@ export function Queue({ currentQueue }: QueueProps): JSX.Element {
       setSelectedQueueItemIds([]);
       return;
     }
-    setSelectedQueueItemIds(currentQueue.fullQueue.filter((_,i) => i !== currentQueue.currentIndex).map(item => item.id!))
+    setSelectedQueueItemIds(
+      currentQueue.fullQueue
+        .filter((_, i) => i !== currentQueue.currentIndex)
+        .map((item) => item.id!),
+    );
   };
 
   return (
