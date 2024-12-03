@@ -48,12 +48,7 @@ export function Queue({ currentQueue }: QueueProps): JSX.Element {
       setSelectedQueueItemIds([]);
       return;
     }
-    setSelectedQueueItemIds(
-      // Same thing with ignoring the first song - the user doesn't think of it as part of the queue
-      currentQueue.fullQueue
-        .slice((currentQueue.currentIndex ?? 1) + 1)
-        .map((item) => item.id!),
-    );
+    setSelectedQueueItemIds(currentQueue.fullQueue.filter((_,i) => i !== currentQueue.currentIndex).map(item => item.id!))
   };
 
   return (
