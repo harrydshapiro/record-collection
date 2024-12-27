@@ -4,3 +4,4 @@ node_modules/
 send-message.curl
 **/library-cache.json
 .DS_Store
+test-music-lib/
