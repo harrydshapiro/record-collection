@@ -1,7 +1,7 @@
 const fs = require('fs');
 const fetch = require('node-fetch');
 
-const filePrefix = "Madison Cunningham/Who Are You Now/";
+const filePrefix = "Madison Cunningham/Who Are You Now";
 const fileNames = [
 "01 - Madison Cunningham - Pin It Down.flac",
 "02 - Madison Cunningham - Song In My Head.flac",
