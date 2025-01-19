@@ -19,7 +19,7 @@ export function HomePage() {
   const libraryContext = useContext(LibraryContext);
 
   const currentSong = playerContext.player.currentSong;
-  const { album, albumArtist, title, id: songId } = currentSong || {};
+  const { album, albumArtist, title, id: songId, artist } = currentSong || {};
 
   // TODO: This should be abstracted... somewhere. Somehow. Search for selector-esque patterns for context
   // Should one context even know about the other? Might be an antipattern
@@ -49,7 +49,7 @@ export function HomePage() {
         <div className={styles.playerContainerWrapper}>
           <PlayerController
             albumName={album}
-            artistName={albumArtist}
+            artistName={artist || albumArtist}
             trackName={title}
             songId={songId}
             albumCoverArtUrl={currentAlbum?.albumCoverArtUrl}

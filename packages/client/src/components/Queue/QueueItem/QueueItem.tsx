@@ -26,7 +26,7 @@ export function QueueItem({
         <AlbumCover
           // TODO: Figure out if we need this album ID
           albumName={queueItemInfo.album!}
-          artistName={queueItemInfo.albumArtist!}
+          artistName={queueItemInfo.artist || queueItemInfo.albumArtist!}
           trackName={queueItemInfo.title}
         />
       </div>
