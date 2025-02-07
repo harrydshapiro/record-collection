@@ -2,6 +2,10 @@
     display: flex;
     margin: 0 0 40px 0;
 
+    @media (max-width: 768px) {
+        margin: 0 0 10px 0;
+    }
+
     .selectButton {
         margin-right: 20px;
     }

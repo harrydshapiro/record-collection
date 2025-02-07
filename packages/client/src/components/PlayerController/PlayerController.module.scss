@@ -4,6 +4,10 @@
     
     .currentSongInfo {
         margin-bottom: 15px;
+
+        @media (max-width: 768px) {
+            margin-bottom: 5px;
+        }
     }
 
     .controls {
@@ -20,5 +24,9 @@
         width: 100%;
         aspect-ratio: 1;
         object-fit: contain;
+
+        @media (max-width: 768px) {
+            display: none;
+        }
     }
 }

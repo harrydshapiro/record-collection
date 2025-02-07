@@ -25,6 +25,10 @@
             text-align: right;
             .playerContainerWrapper {
                 margin-bottom: 30px;
+
+                @media (max-width: 768px) {
+                    margin-bottom: 5px;
+                }
             }
         }
     }
@@ -37,6 +41,14 @@
         > div {
             width: 100%;
             max-width: 100%;
+
+            &.rightBar {
+                height: 200px;
+            }
+
+            &.leftBar {
+                height: calc(100% - 220px)
+            }
         }
     }
 }
