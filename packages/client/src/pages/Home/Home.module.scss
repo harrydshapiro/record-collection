@@ -29,3 +29,14 @@
         }
     }
 }
+
+@media (max-width: 768px) {
+    .homeContainer {
+        flex-direction: column-reverse;
+
+        > div {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+}
