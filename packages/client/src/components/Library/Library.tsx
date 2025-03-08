@@ -30,6 +30,10 @@ export function Library({ albums, onAlbumSelect }: LibraryProps) {
     setSortOption(event.target.value as SortOption);
   };
 
+  // TODO: This hash is needlessly large. Like, 15kb when I first introduced it
+  // There are better ways to create a token for the current library. It should
+  // happen in the BE for sure (not subject to tons of rerenders in the FE). And
+  // it should be compressed. And it should be cached.
   const albumsHash = useMemo(
     () =>
       albums
@@ -41,7 +45,6 @@ export function Library({ albums, onAlbumSelect }: LibraryProps) {
   );
 
   const sortedAlbums = useMemo(() => {
-    console.log("sorted album changing", { albumsHash, sortOption });
     return albums.sort(SortOptions[sortOption]);
   }, [albumsHash, sortOption]);
 
