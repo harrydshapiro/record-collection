@@ -24,7 +24,7 @@ const SortOptions = Object.freeze({
 type SortOption = keyof typeof SortOptions;
 
 export function Library({ albums, onAlbumSelect }: LibraryProps) {
-  const [sortOption, setSortOption] = useState<SortOption>("A-Z Artist");
+  const [sortOption, setSortOption] = useState<SortOption>("Shuffle");
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOption(event.target.value as SortOption);
