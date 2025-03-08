@@ -38,7 +38,6 @@ export function LibraryProvider({ children }: { children: JSX.Element }) {
   const [libraryState, dispatch] = useReducer(libraryReducer, initialState);
 
   useEffect(() => {
-    console.log("test hello world");
     void getAlbums().then((a) => {
       dispatch({
         type: "newAlbums",

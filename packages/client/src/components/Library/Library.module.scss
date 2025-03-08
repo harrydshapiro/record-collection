@@ -4,8 +4,15 @@
     flex-wrap: wrap;
     justify-content: space-between;
 
-    > .albumCoverWrapper {
+    > * {
         margin-bottom: 20px;
+    }
+
+    .sortSelectionContainer {
+        width: 100%;
+    }
+
+    > .albumCoverWrapper {
         width: calc(50% - 10px);
     }
 }
