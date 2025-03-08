@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import styles from "./Library.module.scss";
 import { GetAlbumsReturnType } from "@record-collection/server";
 import { AlbumCover } from "../AlbumCover/AlbumCover";
@@ -30,6 +30,21 @@ export function Library({ albums, onAlbumSelect }: LibraryProps) {
     setSortOption(event.target.value as SortOption);
   };
 
+  const albumsHash = useMemo(
+    () =>
+      albums
+        .sort((a, b) => (a.albumId > b.albumId ? 1 : -1))
+        .reduce((acc, curr) => {
+          return acc + curr.albumId;
+        }, ""),
+    [albums],
+  );
+
+  const sortedAlbums = useMemo(() => {
+    console.log("sorted album changing", { albumsHash, sortOption });
+    return albums.sort(SortOptions[sortOption]);
+  }, [albumsHash, sortOption]);
+
   return (
     <div className={styles.libraryContainer}>
       <div className={styles.sortSelectionContainer}>
@@ -39,7 +54,7 @@ export function Library({ albums, onAlbumSelect }: LibraryProps) {
           <option value="Shuffle">Shuffle</option>
         </select>
       </div>
-      {albums.sort(SortOptions[sortOption]).map((a, index) => (
+      {sortedAlbums.map((a, index) => (
         <div className={styles.albumCoverWrapper} key={index}>
           <AlbumCover
             onClick={onAlbumSelect}
