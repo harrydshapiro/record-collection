@@ -28,7 +28,6 @@ class _LibraryService {
       tracks[0]?.path.split("/").slice(0, -1).join("/") || "",
     );
     const localAlbumArtPath = await getLocalAlbumArtPath(directory);
-    console.log("getAlbumCoverArt", { directory, localAlbumArtPath });
     if (localAlbumArtPath) {
       return createReadStream(localAlbumArtPath);
     }

@@ -19,12 +19,14 @@ const SortOptions = Object.freeze({
         ? 1
         : -1,
   Shuffle: () => (Math.random() > 0.5 ? 1 : -1),
+  "Recently Added": (a: GetAlbumsReturnType[0], b: GetAlbumsReturnType[0]) =>
+    b.albumAddedAt - a.albumAddedAt,
 });
 
 type SortOption = keyof typeof SortOptions;
 
 export function Library({ albums, onAlbumSelect }: LibraryProps) {
-  const [sortOption, setSortOption] = useState<SortOption>("Shuffle");
+  const [sortOption, setSortOption] = useState<SortOption>("Recently Added");
 
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOption(event.target.value as SortOption);
@@ -53,8 +55,9 @@ export function Library({ albums, onAlbumSelect }: LibraryProps) {
       <div className={styles.sortSelectionContainer}>
         <label htmlFor="sortOptions">Sort by </label>
         <select id="sortOptions" value={sortOption} onChange={handleSortChange}>
-          <option value="A-Z Artist">A-Z Artist</option>
-          <option value="Shuffle">Shuffle</option>
+          {Object.keys(SortOptions).map((option) => (
+            <option value={option}>{option}</option>
+          ))}
         </select>
       </div>
       {sortedAlbums.map((a, index) => (

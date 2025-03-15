@@ -53,11 +53,9 @@ export async function getLocalAlbumArtPath(
   const albumArtFileName = fileNames.find((fileName) =>
     fileName.toLowerCase().match(/^cover.(jpg|jpeg|png)/),
   );
-  console.log("getLocalAlbumArtPath 1/2", { fileNames, albumArtFileName });
   if (!albumArtFileName) {
     return;
   }
   const result = path.join(albumDirectoryPath, albumArtFileName);
-  console.log("getLocalAlbumArtPath 2/2", { result });
   return result;
 }

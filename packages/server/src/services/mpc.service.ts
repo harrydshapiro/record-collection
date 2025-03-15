@@ -1,4 +1,4 @@
-import { MPC } from "mpc-js";
+import { MPC, Song } from "mpc-js";
 import { Subject, Subscription } from "rxjs";
 import { MpdSubsystem } from "../types/mpc";
 import {
@@ -75,7 +75,7 @@ class _MpcService {
             void this.handlePlaylistChanged();
             break;
           default:
-            console.log("subsystem changed:", subsystem);
+            break;
         }
       });
     });
@@ -187,30 +187,30 @@ class _MpcService {
 
     const albums: GetAlbumsReturnType = [];
 
-    Array.from(groupedAlbumTags.entries()).map(
-      ([[albumArtist], albumNames]) => {
-        if (!albumArtist) {
-          return;
+    for (const entry of groupedAlbumTags) {
+      const [[albumArtist], albumNames] = entry;
+      if (!albumArtist) {
+        continue;
+      }
+      for (const albumName of albumNames) {
+        if (!albumName) {
+          continue;
         }
-        albumNames.forEach((albumName) => {
-          if (!albumName) {
-            return;
-          }
-          const albumId = generateAlbumId({
-            albumName,
-            artistName: albumArtist,
-          });
-          albums.push({
-            albumArtist,
-            albumName,
-            albumId,
-            albumCoverArtUrl: generateAlbumCoverArtUrl({
-              albumId,
-            }),
-          });
+        const albumId = generateAlbumId({
+          albumName,
+          artistName: albumArtist,
         });
-      },
-    );
+        albums.push({
+          albumArtist,
+          albumName,
+          albumId,
+          albumCoverArtUrl: generateAlbumCoverArtUrl({
+            albumId,
+          }),
+          albumAddedAt: await this.getAlbumAddedToLibraryEpoch({ albumId }),
+        });
+      }
+    }
 
     return albums;
   }
@@ -222,6 +222,22 @@ class _MpcService {
       ["AlbumArtist", albumArtistName],
     ]);
   });
+
+  async getAlbumAddedToLibraryEpoch({ albumId }: { albumId: AlbumId }) {
+    let tracks: Song[];
+    try {
+      tracks = await this.getTracksForAlbum({ albumId });
+    } catch (err) {
+      return -1;
+    }
+    const dateAdded = tracks.reduce<number>((dateAdded, track) => {
+      const trackLastModified = track.lastModified?.getTime() || 0;
+      return trackLastModified > dateAdded
+        ? track.lastModified!.getTime()
+        : dateAdded;
+    }, 0);
+    return dateAdded;
+  }
 
   update() {
     this.getTracksForAlbum.cache.clear?.();

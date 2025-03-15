@@ -22,11 +22,7 @@ export const AppDataSource = new DataSource({
 });
 
 export function dbCreateConnection() {
-  return AppDataSource.initialize()
-    .then(() => {
-      console.log("Data Source has been initialized!");
-    })
-    .catch((err: unknown) => {
-      console.error("Error during Data Source initialization", err);
-    });
+  return AppDataSource.initialize().catch((err: unknown) => {
+    console.error("Error during Data Source initialization", err);
+  });
 }
