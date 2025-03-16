@@ -13,6 +13,7 @@ import {
   parseAlbumId,
 } from "./library.helpers";
 import { memoize } from "lodash";
+import { readThroughWithBackgroundRefresh } from "./cache.service";
 
 class _MpcService {
   mpc!: MPC;
@@ -36,7 +37,7 @@ class _MpcService {
   }
 
   private attachConnectionEventListeners() {
-    this.mpc.on("socket-error", (e) => {
+    this.mpc.on("socket-error", (e: unknown) => {
       console.error("MPC socket error", e);
     });
     this.mpc.on("socket-end", () => {
@@ -178,42 +179,46 @@ class _MpcService {
     };
   }
 
-  async getAlbums(): Promise<GetAlbumsReturnType> {
-    const groupedAlbumTags = await this.mpc.database.list(
-      "Album",
-      [],
-      ["AlbumArtist"],
-    );
+  getAlbums = () =>
+    readThroughWithBackgroundRefresh<GetAlbumsReturnType>({
+      cacheKey: "getAlbumsResponse",
+      dataFetchCb: async () => {
+        const groupedAlbumTags = await this.mpc.database.list(
+          "Album",
+          [],
+          ["AlbumArtist"],
+        );
 
-    const albums: GetAlbumsReturnType = [];
+        const albums: GetAlbumsReturnType = [];
 
-    for (const entry of groupedAlbumTags) {
-      const [[albumArtist], albumNames] = entry;
-      if (!albumArtist) {
-        continue;
-      }
-      for (const albumName of albumNames) {
-        if (!albumName) {
-          continue;
+        for (const entry of groupedAlbumTags) {
+          const [[albumArtist], albumNames] = entry;
+          if (!albumArtist) {
+            continue;
+          }
+          for (const albumName of albumNames) {
+            if (!albumName) {
+              continue;
+            }
+            const albumId = generateAlbumId({
+              albumName,
+              artistName: albumArtist,
+            });
+            albums.push({
+              albumArtist,
+              albumName,
+              albumId,
+              albumCoverArtUrl: generateAlbumCoverArtUrl({
+                albumId,
+              }),
+              albumAddedAt: await this.getAlbumAddedToLibraryEpoch({ albumId }),
+            });
+          }
         }
-        const albumId = generateAlbumId({
-          albumName,
-          artistName: albumArtist,
-        });
-        albums.push({
-          albumArtist,
-          albumName,
-          albumId,
-          albumCoverArtUrl: generateAlbumCoverArtUrl({
-            albumId,
-          }),
-          albumAddedAt: await this.getAlbumAddedToLibraryEpoch({ albumId }),
-        });
-      }
-    }
 
-    return albums;
-  }
+        return albums;
+      },
+    });
 
   getTracksForAlbum = memoize(async ({ albumId }: { albumId: AlbumId }) => {
     const { albumName, albumArtistName } = parseAlbumId(albumId);
