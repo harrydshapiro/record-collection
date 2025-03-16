@@ -21,3 +21,5 @@ send-message.curl
 # keep config folder with env files ONLY for demo purposes
 # config/
 # .env
+
+.cache/
