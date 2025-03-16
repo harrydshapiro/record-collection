@@ -25,6 +25,7 @@
         "express": "^4.17.3",
         "express-async-errors": "^3.1.1",
         "fetch": "^1.1.0",
+        "file-system-cache": "^2.4.7",
         "got": "^14.4.2",
         "helmet": "^5.0.2",
         "jsonwebtoken": "^8.5.1",
