@@ -10,6 +10,17 @@
 
     .sortSelectionContainer {
         width: 100%;
+
+        option {
+            background: none;
+            outline: none;
+            border: none;
+            border-bottom: 0.5px solid black;
+            min-width: fit-content;
+            max-width: unset;
+            font-family: 'Neue Montreal';
+            font-size: inherit;
+        }
     }
 
     > .albumCoverWrapper {
