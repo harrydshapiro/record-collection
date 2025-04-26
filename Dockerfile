@@ -58,6 +58,9 @@ FROM base as final
 # Use production node environment by default.
 ENV NODE_ENV production
 
+ARG LIBRARY_ROOT_PATH
+ENV LIBRARY_ROOT_PATH=${LIBRARY_ROOT_PATH}}
+
 # Run the application as a non-root user.
 USER node
 

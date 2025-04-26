@@ -13,6 +13,7 @@ services:
       context: .
     environment:
       NODE_ENV: production
+      LIBRARY_ROOT_PATH: "/Users/harryshapiro/developer/personal/record-collection/test-music-lib"
     ports:
       - 4000:4000
 

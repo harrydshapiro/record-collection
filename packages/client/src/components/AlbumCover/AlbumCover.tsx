@@ -28,7 +28,7 @@ export function AlbumCover({
       }}
     >
       {albumArtUrl && (
-        <img src={albumArtUrl} className={styles.albumCoverArt}></img>
+        <img src={albumArtUrl} className={styles.albumCoverArt} loading="lazy"></img>
       )}
       {trackName && <p>{trackName}</p>}
       <p>{albumName}</p>
