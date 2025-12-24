@@ -7,7 +7,9 @@ export const handleGetAlbums: API["library"]["albums"]["GET"] = async (
   res,
 ) => {
   try {
+    console.log('about to run route handler')
     const albums = await MpcService.getAlbums();
+    console.log('returning albums ')
     return res.json(albums);
   } catch (err) {
     console.error(err);

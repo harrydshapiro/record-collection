@@ -19,21 +19,21 @@ class _MpcService {
   mpc!: MPC;
   private $stateStream = new Subject<SoundSystemUpdates>();
 
-  constructor({ port }: { port: number }) {
+  constructor({ host, port }: { host: string; port: number }) {
     if (!port) {
       throw new Error("No MPD port MPC to connect to");
     }
-    this.initMpc(port).catch((err) => {
+    this.initMpc(host, port).catch((err) => {
       console.error("Error initializing MPD client");
       console.error(err);
     });
   }
 
-  private async initMpc(port: number) {
+  private async initMpc(host: string, port: number) {
     this.mpc = new MPC();
     this.attachConnectionEventListeners();
     this.attachMpdStateListener();
-    await this.mpc.connectTCP("0.0.0.0", port);
+    await this.mpc.connectTCP(host, port);
   }
 
   private attachConnectionEventListeners() {
@@ -183,6 +183,7 @@ class _MpcService {
     readThroughWithBackgroundRefresh<GetAlbumsReturnType>({
       cacheKey: "getAlbumsResponse",
       dataFetchCb: async () => {
+        console.log('fetching new results')
         const groupedAlbumTags = await this.mpc.database.list(
           "Album",
           [],
@@ -257,5 +258,6 @@ class _MpcService {
 }
 
 export const MpcService = new _MpcService({
+  host: process.env.HOST || "0.0.0.0",
   port: parseInt(process.env.MPD_PORT || "6600"),
 });

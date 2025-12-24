@@ -1,11 +1,5 @@
 # syntax=docker/dockerfile:1
 
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/go/dockerfile-reference/
-
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
-
 ARG NODE_VERSION=21.1.0
 
 ################################################################################
@@ -15,37 +9,21 @@ FROM node:${NODE_VERSION}-alpine as base
 # Set working directory for all build stages.
 WORKDIR /usr/src/app
 
-
-################################################################################
-# Create a stage for installing production dependecies.
-FROM base as deps
-
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.yarn to speed up subsequent builds.
-# Leverage bind mounts to package.json and yarn.lock to avoid having to copy them
-# into this layer.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=yarn.lock,target=yarn.lock \
-    --mount=type=cache,target=/root/.yarn \
-    yarn install --production --frozen-lockfile
-
 ################################################################################
 # Create a stage for building the application.
-FROM deps as build
+FROM base as build
 
-# Download additional development dependencies before building, as some projects require
-# "devDependencies" to be installed to build. If you don't need this, remove this step.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=yarn.lock,target=yarn.lock \
-    --mount=type=cache,target=/root/.yarn \
+# Copy all package.json files first (for yarn workspaces)
+COPY package.json yarn.lock ./
+COPY packages/client/package.json ./packages/client/
+COPY packages/server/package.json ./packages/server/
+
+# Install all dependencies (including devDependencies needed for build)
+RUN --mount=type=cache,target=/root/.yarn \
     yarn install --frozen-lockfile
-
-RUN yarn add react-scripts typescript
 
 # Copy the rest of the source files into the image.
 COPY . .
-
-RUN echo "FOOOBAR"
 
 # Run the build script.
 RUN yarn run build
@@ -58,23 +36,24 @@ FROM base as final
 # Use production node environment by default.
 ENV NODE_ENV production
 
-ARG LIBRARY_ROOT_PATH
-ENV LIBRARY_ROOT_PATH=${LIBRARY_ROOT_PATH}}
+# Copy package.json files for yarn workspaces
+COPY package.json yarn.lock ./
+COPY packages/server/package.json ./packages/server/
+
+# Install only production dependencies
+RUN --mount=type=cache,target=/root/.yarn \
+    yarn install --production --frozen-lockfile
+
+# Copy the built application from the build stage
+COPY --from=build /usr/src/app/packages/server/dist ./packages/server/dist
+COPY --from=build /usr/src/app/packages/client/build ./packages/client/build
 
 # Run the application as a non-root user.
 USER node
 
-# Copy package.json so that package manager commands can be used.
-COPY package.json .
-
-# Copy the production dependencies from the deps stage and also
-# the built application from the build stage into the image.
-COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/packages/server/dist ./packages/server/dist
-
-
 # Expose the port that the application listens on.
 EXPOSE 4000
 
-# Run the application.
-CMD yarn start
+# Run the application with NODE_PATH for TypeScript path aliases
+ENV NODE_PATH=/usr/src/app/packages/server/dist
+CMD ["node", "packages/server/dist/index.js"]

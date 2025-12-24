@@ -24,6 +24,7 @@ export async function readThroughWithBackgroundRefresh<T>({
 }) {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const cachedResults = await cache.get(cacheKey);
+  console.log('CACHED RESULTS ARE', { cachedResults })
   const newData = dataFetchCb().then((r) => {
     cache.set(cacheKey, r).catch((error: unknown) =>
       console.error(`Error caching results`, {
@@ -34,5 +35,6 @@ export async function readThroughWithBackgroundRefresh<T>({
     );
     return r;
   });
+  console.log("about to return")
   return (cachedResults || (await newData)) as T;
 }
