@@ -13,6 +13,10 @@ WORKDIR /usr/src/app
 # Create a stage for building the application.
 FROM base as build
 
+# Accept build argument for client backend URL
+ARG REACT_APP_BACKEND_URL
+ENV REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
+
 # Copy all package.json files first (for yarn workspaces)
 COPY package.json yarn.lock ./
 COPY packages/client/package.json ./packages/client/
@@ -47,6 +51,9 @@ RUN --mount=type=cache,target=/root/.yarn \
 # Copy the built application from the build stage
 COPY --from=build /usr/src/app/packages/server/dist ./packages/server/dist
 COPY --from=build /usr/src/app/packages/client/build ./packages/client/build
+
+# Create cache directory and set ownership to node user
+RUN mkdir -p .cache && chown -R node:node /usr/src/app
 
 # Run the application as a non-root user.
 USER node

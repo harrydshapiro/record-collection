@@ -258,6 +258,6 @@ class _MpcService {
 }
 
 export const MpcService = new _MpcService({
-  host: process.env.HOST || "0.0.0.0",
+  host: process.env.MPD_HOST || "0.0.0.0",
   port: parseInt(process.env.MPD_PORT || "6600"),
 });

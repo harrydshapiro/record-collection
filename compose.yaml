@@ -4,33 +4,40 @@
 services:
   # MPD (Music Player Daemon) service
   mpd:
-    image: vimagick/mpd:latest
+    image: tobi312/rpi-mpd:alpine
     container_name: record-collection-mpd
     volumes:
       - ./mpd.conf:/etc/mpd.conf:ro
-      - ./test-music-lib:/music:ro
+      - /mnt/music/music:/music:ro
       - mpd-data:/var/lib/mpd
     ports:
-      - "6600:6600"   # MPD control port
-      - "8000:8000"   # HTTP audio stream
+      - "${MPD_CONTROL_PORT}:6600"   # MPD control port
+      - "${MPD_STREAM_PORT}:8000"    # HTTP audio stream
+    devices:
+      - /dev/snd:/dev/snd            # Audio device access
+    group_add:
+      - audio                        # Audio group for ALSA access
     restart: unless-stopped
 
   # Node.js server serving the React client
   server:
     build:
       context: .
+      args:
+        REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL}
     container_name: record-collection-server
     environment:
-      NODE_ENV: production
-      MPD_PORT: "6600"
-      # MPD runs in separate container, connect via service name
-      HOST: mpd
-      LIBRARY_ROOT_PATH: /music
+      NODE_ENV: ${NODE_ENV}
+      MPD_HOST: ${MPD_HOST}
+      MPD_PORT: ${MPD_PORT}
+      # Public-facing host for generating URLs
+      HOST: ${HOST}
+      LIBRARY_ROOT_PATH: ${LIBRARY_ROOT_PATH}
     volumes:
       # Mount music library so server can read cover art
-      - ./test-music-lib:/music:ro
+      - /mnt/music/music:/music:ro
     ports:
-      - "4000:4000"
+      - "${SERVER_PORT}:4000"
     depends_on:
       - mpd
     restart: unless-stopped
